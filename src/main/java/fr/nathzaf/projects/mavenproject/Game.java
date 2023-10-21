@@ -41,8 +41,7 @@ public class Game {
      * Handles a single turn in the game, prompting the user for input and making the move.
      */
     private void playTurn() {
-        int x = -1;
-        int y = -1;
+        int x, y;
 
         System.out.print("Enter the X coordinate of the point you want to place: ");
         while (true) {
