@@ -21,7 +21,7 @@ public class MorpionSolitaireSolver {
             }
 
             int index = random.nextInt(possibleMoves.size());
-            Point randomMove = (Point) possibleMoves.toArray()[index];
+            Point randomMove = possibleMoves.stream().toList().get(index);
 
             board.addPoint(randomMove);
         }
