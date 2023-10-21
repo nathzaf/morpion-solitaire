@@ -7,7 +7,7 @@ public class Board {
 
     private final Set<Point> points;
 
-    private final Set<Point> alignmentPoints;
+    private final Set<Alignment> alignments;
 
     private final Mode gameMode;
 
@@ -23,7 +23,7 @@ public class Board {
      */
     public Board(Mode mode) {
         points = new HashSet<>();
-        alignmentPoints = new HashSet<>();
+        alignments = new HashSet<>();
         this.gameMode = mode;
         initializeBoard();
     }
@@ -63,14 +63,19 @@ public class Board {
      * @return true if the move is valid, false otherwise
      */
     private boolean isValidMove(Point point) {
-        if (points.contains(point) || alignmentPoints.contains(point)) return false;
+        if (points.contains(point) || isAlignedPoint(point)) return false;
 
-        Set<Point> detectedAlignment = detectAlignment(point);
+        Alignment detectedAlignment = detectAlignment(point);
         if (detectedAlignment == null) return false;
-        long count = detectedAlignment.stream()
-                .filter(alignmentPoints::contains)
-                .count();
-        return count <= 2;
+
+        for(Alignment alignment : alignments){
+            long count = detectedAlignment.getPoints().stream()
+                    .filter(alignment.getPoints()::contains)
+                    .count();
+            if (count > 2)
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -82,9 +87,9 @@ public class Board {
     public boolean addPoint(Point point) {
         if (isValidMove(point)) {
             points.add(point);
-            Set<Point> alignment = detectAlignment(point);
+            Alignment alignment = detectAlignment(point);
             if (alignment != null) {
-                alignmentPoints.addAll(alignment);
+                alignments.add(alignment);
             }
             score++;
             return true;
@@ -98,7 +103,7 @@ public class Board {
      * @param point the point for which alignment needs to be detected
      * @return a set of points that are aligned, null if none found
      */
-    private Set<Point> detectAlignment(Point point) {
+    private Alignment detectAlignment(Point point) {
         if (hasAlignment(point, 0, 1, 5) != null)
             return hasAlignment(point, 0, 1, 5);
         if (hasAlignment(point, 1, 0, 5) != null)
@@ -107,6 +112,15 @@ public class Board {
             return hasAlignment(point, 1, 1, 5);
         if (hasAlignment(point, 1, -1, 5) != null)
             return hasAlignment(point, 1, -1, 5);
+
+        if (hasAlignment(point, 0, -1, 5) != null)
+            return hasAlignment(point, 0, -1, 5);
+        if (hasAlignment(point, -1, 0, 5) != null)
+            return hasAlignment(point, -1, 0, 5);
+        if (hasAlignment(point, -1, -1, 5) != null)
+            return hasAlignment(point, -1, -1, 5);
+        if (hasAlignment(point, -1, 1, 5) != null)
+            return hasAlignment(point, -1, 1, 5);
         return null;
     }
 
@@ -119,7 +133,7 @@ public class Board {
      * @param required the number of aligned points required
      * @return a set of points that are aligned, null if none found
      */
-    private Set<Point> hasAlignment(Point point, int dx, int dy, int required) {
+    private Alignment hasAlignment(Point point, int dx, int dy, int required) {
         Set<Point> alignedPoints = new HashSet<>();
         for (int i = -4; i <= 4; i++) {
             if (i == 0) {
@@ -134,10 +148,12 @@ public class Board {
             }
 
             if (alignedPoints.size() == required) {
-                if (alignmentPoints.containsAll(alignedPoints)) {
-                    return null;
+                for(Alignment alignment : alignments){
+                    if(alignment.equals(new Alignment(alignedPoints))){
+                        return null;
+                    }
                 }
-                return alignedPoints;
+                return new Alignment(alignedPoints);
             }
         }
         return null;
@@ -207,7 +223,7 @@ public class Board {
      */
     public void reset() {
         points.clear();
-        alignmentPoints.clear();
+        alignments.clear();
         initializeBoard();
     }
 
@@ -215,36 +231,41 @@ public class Board {
         return new HashSet<>(points);
     }
 
+    private boolean isAlignedPoint(Point point){
+        for(Alignment alignment : alignments) {
+            if(alignment.getPoints().contains(point))
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         Set<Point> possibleMoves = getPossibleMoves();
         Set<Point> allPoints = new HashSet<>(points);
-        allPoints.addAll(alignmentPoints);
+        for(Alignment alignment : alignments)
+            allPoints.addAll(alignment.getPoints());
         allPoints.addAll(possibleMoves);
 
-        int minX = allPoints.stream().mapToInt(Point::getX).min().orElse(0);
-        int maxX = allPoints.stream().mapToInt(Point::getX).max().orElse(0);
-        int minY = allPoints.stream().mapToInt(Point::getY).min().orElse(0);
-        int maxY = allPoints.stream().mapToInt(Point::getY).max().orElse(0);
-
-        minX -= 1;
-        maxX += 1;
-        minY -= 1;
-        maxY += 1;
+        int minX = allPoints.stream().mapToInt(Point::getX).min().orElse(0) - 1;
+        int maxX = allPoints.stream().mapToInt(Point::getX).max().orElse(0) + 1;
+        int minY = allPoints.stream().mapToInt(Point::getY).min().orElse(0) - 1;
+        int maxY = allPoints.stream().mapToInt(Point::getY).max().orElse(0) + 1;
 
         StringBuilder builder = new StringBuilder();
         for (int i = minY; i <= maxY; i++) {
             for (int j = minX; j <= maxX; j++) {
                 Point currentPoint = new Point(j, i);
-                if (alignmentPoints.contains(currentPoint)) {
-                    builder.append("O ");
+                if (isAlignedPoint(currentPoint)){
+                    builder.append("O");
                 } else if (points.contains(currentPoint)) {
-                    builder.append("X ");
+                    builder.append("X");
                 } else if (possibleMoves.contains(currentPoint)) {
-                    builder.append("? ");
+                    builder.append("?");
                 } else {
-                    builder.append(". ");
+                    builder.append(".");
                 }
+                builder.append(" ");
             }
             builder.append("\n");
         }
