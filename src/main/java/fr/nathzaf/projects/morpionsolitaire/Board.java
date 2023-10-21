@@ -63,13 +63,7 @@ public class Board {
      * @return true if the move is valid, false otherwise
      */
     private boolean isValidMove(Point point) {
-        boolean isAlignedPoint = false;
-        for(Alignment alignment : alignments)
-            if(alignment.getPoints().contains(point)){
-                isAlignedPoint = true;
-                break;
-            }
-        if (points.contains(point) || isAlignedPoint) return false;
+        if (points.contains(point) || isAlignedPoint(point)) return false;
 
         Alignment detectedAlignment = detectAlignment(point);
         if (detectedAlignment == null) return false;
@@ -155,7 +149,7 @@ public class Board {
 
             if (alignedPoints.size() == required) {
                 for(Alignment alignment : alignments){
-                    if(alignment.getPoints().containsAll(alignedPoints)){
+                    if(alignment.equals(new Alignment(alignedPoints))){
                         return null;
                     }
                 }
@@ -237,6 +231,14 @@ public class Board {
         return new HashSet<>(points);
     }
 
+    private boolean isAlignedPoint(Point point){
+        for(Alignment alignment : alignments) {
+            if(alignment.getPoints().contains(point))
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         Set<Point> possibleMoves = getPossibleMoves();
@@ -254,21 +256,16 @@ public class Board {
         for (int i = minY; i <= maxY; i++) {
             for (int j = minX; j <= maxX; j++) {
                 Point currentPoint = new Point(j, i);
-                boolean isAligned = false;
-                for(Alignment alignment : alignments){
-                    if (alignment.getPoints().contains(currentPoint)){
-                        builder.append("O ");
-                        isAligned = true;
-                        break;
-                    }
+                if (isAlignedPoint(currentPoint)){
+                    builder.append("O");
+                } else if (points.contains(currentPoint)) {
+                    builder.append("X");
+                } else if (possibleMoves.contains(currentPoint)) {
+                    builder.append("?");
+                } else {
+                    builder.append(".");
                 }
-                if (points.contains(currentPoint) && !isAligned) {
-                    builder.append("X ");
-                } else if (possibleMoves.contains(currentPoint) && !isAligned) {
-                    builder.append("? ");
-                } else if (!isAligned) {
-                    builder.append(". ");
-                }
+                builder.append(" ");
             }
             builder.append("\n");
         }
