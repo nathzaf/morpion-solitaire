@@ -8,7 +8,7 @@ public class BoardTest {
 	@Test
 	public void testAddValidPointTouchingMode() {
 	    Board board = new Board(Mode.TOUCHING);
-	    assertTrue(board.addPoint(new Point(0, 3)), "Should allow point to complete the alignment in Touching mode");
+	    assertTrue(board.addPoint(new Point(2, 3)), "Should allow point to complete the alignment in Touching mode");
 	}
 
 	@Test
