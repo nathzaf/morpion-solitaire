@@ -1,4 +1,4 @@
-package fr.nathzaf.projects.mavenproject;
+package fr.nathzaf.projects.morpionsolitaire;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
