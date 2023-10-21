@@ -266,7 +266,7 @@ public class Board {
                     builder.append("X ");
                 } else if (possibleMoves.contains(currentPoint) && !isAligned) {
                     builder.append("? ");
-                } else {
+                } else if (!isAligned) {
                     builder.append(". ");
                 }
             }
