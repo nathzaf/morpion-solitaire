@@ -3,16 +3,18 @@ package fr.nathzaf.projects.morpionsolitaire;
 import java.util.Random;
 import java.util.Set;
 
-public class MorpionSolitaireSolver {
+public class RandomSolver implements Solver {
     
     private final Board board;
-    private Random random = new Random();
+    private final Random random = new Random();
 
-    public MorpionSolitaireSolver(Mode mode) {
+    public RandomSolver(Mode mode) {
         this.board = new Board(mode);
     }
 
-    public void solveRandomly() {
+    @Override
+    public void solve() {
+        System.out.println("Solving in progress, please wait...");
         while (!board.isGameOver()) {
             Set<Point> possibleMoves = board.getPossibleMoves();
             
@@ -29,8 +31,4 @@ public class MorpionSolitaireSolver {
         System.out.println("Game over! Score: " + board.getScore());
     }
 
-    public static void main(String[] args) {
-        MorpionSolitaireSolver solver = new MorpionSolitaireSolver(Mode.TOUCHING);
-        solver.solveRandomly();
-    }
 }
