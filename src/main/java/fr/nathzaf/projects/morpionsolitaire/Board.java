@@ -1,14 +1,20 @@
-package fr.nathzaf.projects.mavenproject;
+package fr.nathzaf.projects.morpionsolitaire;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Board {
-    private Set<Point> points;
-    private Set<Point> alignmentPoints;
-    private Mode gameMode;
+
+    private final Set<Point> points;
+
+    private final Set<Point> alignmentPoints;
+
+    private final Mode gameMode;
+
     private int score = 0;
+
     private static final int INITIAL_SIZE = 4;
+
 
     /**
      * Constructs a new board with a given mode.
@@ -64,9 +70,7 @@ public class Board {
         long count = detectedAlignment.stream()
                 .filter(alignmentPoints::contains)
                 .count();
-        if (count > 2) return false;
-
-        return true;
+        return count <= 2;
     }
 
     /**
@@ -95,11 +99,14 @@ public class Board {
      * @return a set of points that are aligned, null if none found
      */
     private Set<Point> detectAlignment(Point point) {
-        if (hasAlignment(point, 0, 1, 5) != null) return hasAlignment(point, 0, 1, 5);
-        if (hasAlignment(point, 1, 0, 5) != null) return hasAlignment(point, 1, 0, 5);
-        if (hasAlignment(point, 1, 1, 5) != null) return hasAlignment(point, 1, 1, 5);
-        if (hasAlignment(point, 1, -1, 5) != null) return hasAlignment(point, 1, -1, 5);
-
+        if (hasAlignment(point, 0, 1, 5) != null)
+            return hasAlignment(point, 0, 1, 5);
+        if (hasAlignment(point, 1, 0, 5) != null)
+            return hasAlignment(point, 1, 0, 5);
+        if (hasAlignment(point, 1, 1, 5) != null)
+            return hasAlignment(point, 1, 1, 5);
+        if (hasAlignment(point, 1, -1, 5) != null)
+            return hasAlignment(point, 1, -1, 5);
         return null;
     }
 
@@ -164,9 +171,9 @@ public class Board {
     }
 
     /**
-     * Determines if the game is over.
+     * Gets the possible moves
      *
-     * @return true if the game is over, false otherwise
+     * @return a set of points that can be played
      */
     public Set<Point> getPossibleMoves() {
         Set<Point> possibleMoves = new HashSet<>();
@@ -242,7 +249,7 @@ public class Board {
             builder.append("\n");
         }
 
-        builder.append("\nCoups possibles:\n");
+        builder.append("\nPossible moves:\n");
         for (Point move : possibleMoves) {
             builder.append("[").append(move.getX()).append(", ").append(move.getY()).append("]\n");
         }

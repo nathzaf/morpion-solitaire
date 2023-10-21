@@ -1,4 +1,4 @@
-package fr.nathzaf.projects.mavenproject;
+package fr.nathzaf.projects.morpionsolitaire;
 
 public enum Mode {
     TOUCHING, // 5T
