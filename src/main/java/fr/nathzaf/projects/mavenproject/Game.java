@@ -1,17 +1,21 @@
 package fr.nathzaf.projects.mavenproject;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
-    private fr.nathzaf.projects.mavenproject.Board board;
-    private Scanner scanner;
+
+    private final Board board;
+
+    private final Scanner scanner;
+
     /**
      * Initializes a new game with the specified mode.
      *
      * @param mode The game mode, either TOUCHING or DISJOINT.
      */
     public Game(Mode mode) {
-        this.board = new fr.nathzaf.projects.mavenproject.Board(mode);
+        this.board = new Board(mode);
         this.scanner = new Scanner(System.in);
     }
 
@@ -23,7 +27,6 @@ public class Game {
             displayBoard();
             playTurn();
         }
-
         System.out.println("Game over! Your score is: " + board.getScore());
     }
 
@@ -38,11 +41,30 @@ public class Game {
      * Handles a single turn in the game, prompting the user for input and making the move.
      */
     private void playTurn() {
-        System.out.println("Enter the X coordinate of the point you want to place: ");
-        int x = scanner.nextInt();
+        int x = -1;
+        int y = -1;
 
-        System.out.println("Enter the Y coordinate of the point you want to place: ");
-        int y = scanner.nextInt();
+        System.out.print("Enter the X coordinate of the point you want to place: ");
+        while (true) {
+            try {
+                x = scanner.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter an integer.");
+                scanner.next();
+            }
+        }
+
+        System.out.print("Enter the Y coordinate of the point you want to place: ");
+        while (true) {
+            try {
+                y = scanner.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter an integer.");
+                scanner.next();
+            }
+        }
 
         Point point = new Point(x, y);
 
@@ -51,13 +73,26 @@ public class Game {
         } else {
             System.out.println("Invalid move! Try again.");
         }
+        System.out.println();
     }
 
     public static void main(String[] args) {
         System.out.println("Welcome to the game!");
-        System.out.println("Choose your mode: 1. TOUCHING, 2. DISJOINT");
-        Scanner sc = new Scanner(System.in);
-        int choice = sc.nextInt();
+        Scanner scanner = new Scanner(System.in);
+        int choice = 0;
+
+        while(choice != 1 && choice != 2){
+            System.out.println("Choose your mode: 1. TOUCHING, 2. DISJOINT");
+            while (true) {
+                try {
+                    choice = scanner.nextInt();
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter an integer.");
+                    scanner.next();
+                }
+            }
+        }
 
         Mode mode = (choice == 1) ? Mode.TOUCHING : Mode.DISJOINT;
 
