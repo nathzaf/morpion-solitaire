@@ -68,13 +68,29 @@ public class Board {
         Alignment detectedAlignment = detectAlignment(point);
         if (detectedAlignment == null) return false;
 
-        for(Alignment alignment : alignments){
-            long count = detectedAlignment.getPoints().stream()
-                    .filter(alignment.getPoints()::contains)
-                    .count();
-            if (count > 2)
-                return false;
+        if (gameMode == Mode.TOUCHING) {
+            for (Alignment alignment : alignments) {
+                if (alignment.getDirection() == detectedAlignment.getDirection()) {
+                    long count = detectedAlignment.getPoints().stream()
+                            .filter(alignment.getPoints()::contains)
+                            .count();
+                    if (count > 2) {
+                        return false;
+                    }
+                }
+            }
+        } else if (gameMode == Mode.DISJOINT) {
+            for (Alignment alignment : alignments) {
+                if (alignment.getDirection() == detectedAlignment.getDirection()) {
+                    boolean hasCommonPoints = detectedAlignment.getPoints().stream()
+                            .anyMatch(alignment.getPoints()::contains);
+                    if (hasCommonPoints) {
+                        return false;
+                    }
+                }
+            }
         }
+
         return true;
     }
 
@@ -104,23 +120,32 @@ public class Board {
      * @return a set of points that are aligned, null if none found
      */
     private Alignment detectAlignment(Point point) {
-        if (hasAlignment(point, 0, 1, 5) != null)
-            return hasAlignment(point, 0, 1, 5);
-        if (hasAlignment(point, 1, 0, 5) != null)
-            return hasAlignment(point, 1, 0, 5);
-        if (hasAlignment(point, 1, 1, 5) != null)
-            return hasAlignment(point, 1, 1, 5);
-        if (hasAlignment(point, 1, -1, 5) != null)
-            return hasAlignment(point, 1, -1, 5);
+        Alignment alignment;
 
-        if (hasAlignment(point, 0, -1, 5) != null)
-            return hasAlignment(point, 0, -1, 5);
-        if (hasAlignment(point, -1, 0, 5) != null)
-            return hasAlignment(point, -1, 0, 5);
-        if (hasAlignment(point, -1, -1, 5) != null)
-            return hasAlignment(point, -1, -1, 5);
-        if (hasAlignment(point, -1, 1, 5) != null)
-            return hasAlignment(point, -1, 1, 5);
+        alignment = hasAlignment(point, 0, 1, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, 1, 0, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, 1, 1, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, 1, -1, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, 0, -1, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, -1, 0, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, -1, -1, 5);
+        if (alignment != null) return alignment;
+
+        alignment = hasAlignment(point, -1, 1, 5);
+        if (alignment != null) return alignment;
+
         return null;
     }
 
@@ -149,13 +174,24 @@ public class Board {
 
             if (alignedPoints.size() == required) {
                 for(Alignment alignment : alignments){
-                    if(alignment.equals(new Alignment(alignedPoints))){
+                    if(alignment.equals(new Alignment(alignedPoints, detectDirection(dx, dy)))){
                         return null;
                     }
                 }
-                return new Alignment(alignedPoints);
+                return new Alignment(alignedPoints, detectDirection(dx, dy));
             }
         }
+        return null;
+    }
+
+    private Direction detectDirection(int dx, int dy) {
+        if (dx == 0 && dy == 1) return Direction.VERTICAL;
+        if (dx == 1 && dy == 0) return Direction.HORIZONTAL;
+        if (dx == 1 && dy == 1) return Direction.DIAGONAL_TOP;
+        if (dx == 1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
+        if (dx == 0 && dy == -1) return Direction.VERTICAL;
+        if (dx == -1 && dy == 0) return Direction.HORIZONTAL;
+        if (dx == -1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
         return null;
     }
 
