@@ -72,14 +72,16 @@ public class Board {
         if (detectedAlignments.isEmpty()) return false;
 
         if (gameMode == Mode.TOUCHING) {
+            boolean valid = false;
             for (Alignment alignment : alignments) {
                 for(Alignment possibleAlignment : detectedAlignments){
                     long count = possibleAlignment.getPoints().stream()
                             .filter(alignment.getPoints()::contains)
                             .count();
-                    if (count > 2) {
-                        return false;
+                    if (count <= 2) {
+                        valid = true;
                     }
+                    if(!valid) return false;
                 }
             }
         } else if (gameMode == Mode.DISJOINT) {
@@ -126,25 +128,25 @@ public class Board {
      * @return a set of points that are aligned, null if none found
      */
     private Set<Alignment> detectAlignments(Point point) {
-        Set<Alignment> alignments = new HashSet<>();
+        Set<Alignment> possibleAlignments = new HashSet<>();
 
-        alignments.addAll(hasAlignment(point, 0, 1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 0, 1, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, 1, 0, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 1, 0, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, 1, 1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 1, 1, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, 1, -1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 1, -1, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, 0, -1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 0, -1, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, -1, 0, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, -1, 0, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, -1, -1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, -1, -1, REQUIRED));
 
-        alignments.addAll(hasAlignment(point, -1, 1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, -1, 1, REQUIRED));
 
-        return alignments;
+        return possibleAlignments;
     }
 
     /**
@@ -178,8 +180,10 @@ public class Board {
                         break;
                     }
                 }
-                if(valid)
+                if(valid) {
                     possibleAlignments.add(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction));
+                    alignedPoints.clear();
+                }
             }
         }
         return possibleAlignments;

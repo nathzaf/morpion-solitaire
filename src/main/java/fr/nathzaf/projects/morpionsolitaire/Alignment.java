@@ -51,4 +51,14 @@ public class Alignment {
     public int hashCode() {
         return Objects.hash(points);
     }
+
+    @Override
+    public String toString() {
+        return "Alignment{" +
+                "points=" + points +
+                ", start=" + start +
+                ", end=" + end +
+                ", direction=" + direction +
+                '}';
+    }
 }
