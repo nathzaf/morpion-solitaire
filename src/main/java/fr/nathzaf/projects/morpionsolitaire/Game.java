@@ -3,7 +3,6 @@ package fr.nathzaf.projects.morpionsolitaire;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Game {
 
@@ -99,27 +98,25 @@ public class Game {
     public static void main(String[] args) {
         System.out.println("Welcome to the game!");
         Scanner scanner = new Scanner(System.in);
-        char choice = 0;
+        char modeChoice = 0;
+        char solverChoice = 0;
 
-        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId(), Mode.RANDOM_SOLVER.getId()).contains(choice)){
-            System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT ; R for Random Solver (in T mode)");
-            while (true) {
-                try {
-                    choice = scanner.next().charAt(0);
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println("Please enter an T ; D or R.");
-                    scanner.next();
-                }
-            }
+        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId()).contains(modeChoice)){
+            System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT");
+            modeChoice = scanner.next().charAt(0);
         }
 
-        if(choice == Mode.TOUCHING.getId() || choice == Mode.DISJOINT.getId()) {
-            Mode mode = choice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
+        while(!List.of('M', 'R').contains(solverChoice)){
+            System.out.println("Do you want to solve it: M for manually ; R for Random auto solver");
+            solverChoice = scanner.next().charAt(0);
+        }
+
+        Mode mode = modeChoice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
+        if(solverChoice == 'M'){
             Game game = new Game(mode);
             game.start();
-        }else if(choice == Mode.RANDOM_SOLVER.getId()){
-            Solver solver = new RandomSolver(Mode.TOUCHING);
+        } else if(solverChoice == 'R'){
+            Solver solver = new RandomSolver(mode);
             solver.solve();
         }
 

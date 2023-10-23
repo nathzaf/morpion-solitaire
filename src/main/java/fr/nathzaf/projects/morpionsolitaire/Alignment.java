@@ -7,19 +7,13 @@ import java.util.Set;
 public class Alignment {
     private final ImmutableSet<Point> points;
 
-    private final Point start;
-
-    private final Point end;
-
     private final Direction direction;
 
-    public Alignment(Set<Point> points, Point start, Point end, Direction direction) {
+    public Alignment(Set<Point> points, Direction direction) {
         if (points.size() != 5) {
             throw new IllegalArgumentException("An alignment must be composed of 5 points.");
         }
         this.points = ImmutableSet.copyOf(points);
-        this.start = start;
-        this.end = end;
         this.direction = direction;
     }
 
@@ -29,14 +23,6 @@ public class Alignment {
 
     public Direction getDirection() {
         return direction;
-    }
-
-    public Point getStart() {
-        return start;
-    }
-
-    public Point getEnd() {
-        return end;
     }
 
     @Override
@@ -56,8 +42,6 @@ public class Alignment {
     public String toString() {
         return "Alignment{" +
                 "points=" + points +
-                ", start=" + start +
-                ", end=" + end +
                 ", direction=" + direction +
                 '}';
     }

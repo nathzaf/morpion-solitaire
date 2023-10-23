@@ -3,7 +3,6 @@ package fr.nathzaf.projects.morpionsolitaire;
 import com.google.common.collect.Sets;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Board {
@@ -27,6 +26,8 @@ public class Board {
      * @param mode the game mode for this board
      */
     public Board(Mode mode) {
+        if(mode == null)
+            throw new NullPointerException("Mode can't be null.");
         points = new HashSet<>();
         alignments = new HashSet<>();
         this.gameMode = mode;
@@ -39,12 +40,12 @@ public class Board {
     private void initializeBoard() {
         int x = 0;
         int y = 0;
-        int width = INITIAL_SIZE;
 
-        if (width <= 3) {
+        if (INITIAL_SIZE <= 3) {
             throw new IllegalArgumentException("The width of the cross must be greater than 3.");
         }
 
+        final int width = INITIAL_SIZE;
         for (int i = 0; i < width; ++i) {
             points.add(new Point(x + i, y));
             points.add(new Point(x + i - width + 1, y + width - 1));
@@ -68,21 +69,23 @@ public class Board {
      * @return true if the move is valid, false otherwise
      */
     private boolean isValidMove(Point point) {
+        if (point == null)
+            throw new NullPointerException();
         if (points.contains(point) || isAlignedPoint(point)) return false;
 
         Set<Alignment> detectedAlignments = detectAlignments(point);
-        if (detectedAlignments.isEmpty()) return false;
-
-        return true;
+        return !detectedAlignments.isEmpty();
     }
 
     /**
      * Adds a point to the board if the move is valid.
      *
      * @param point the point to be added
-     * @return true if the point was added, false otherwise
+     * @return the set of all possible alignment with this point
      */
     public Set<Alignment> addPoint(Point point) {
+        if (point == null)
+            throw new NullPointerException("Adding a null point");
         if (isValidMove(point)) {
             points.add(point);
             return detectAlignments(point);
@@ -92,8 +95,9 @@ public class Board {
 
     public void addAlignment(Alignment alignment){
         score++;
-        if (alignment != null)
-            alignments.add(alignment);
+        if (alignment == null)
+            throw new NullPointerException("Adding a null alignment");
+        alignments.add(alignment);
     }
 
     /**
@@ -103,15 +107,13 @@ public class Board {
      * @return a set of points that are aligned, null if none found
      */
     private Set<Alignment> detectAlignments(Point point) {
+        if (point == null)
+            throw new NullPointerException();
         Set<Alignment> possibleAlignments = new HashSet<>();
 
-        possibleAlignments.addAll(hasAlignment(point, 0, 1, REQUIRED)); // TODO Refacto en utilisation Direction
-
-        possibleAlignments.addAll(hasAlignment(point, 1, 0, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, 1, 1, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, 1, -1, REQUIRED));
+        for(Direction direction : Direction.values()) {
+            possibleAlignments.addAll(hasAlignment(point, direction));
+        }
 
         return possibleAlignments;
     }
@@ -120,42 +122,32 @@ public class Board {
      * Checks for alignment with a given direction and required count.
      *
      * @param point    the starting point
-     * @param dx       the x-direction
-     * @param dy       the y-direction
-     * @param required the number of aligned points required
+     * @param direction the direction
      * @return a set of Alignments that are valid
      */
-    private Set<Alignment> hasAlignment(Point point, int dx, int dy, int required) {
+    private Set<Alignment> hasAlignment(Point point, Direction direction) {
+        if (point == null || direction == null)
+            throw new NullPointerException();
         Set<Alignment> possibleAlignments = new HashSet<>();
         Set<Point> alignedPoints = new HashSet<>();
-        Direction direction = detectDirection(dx, dy);
+        int dx = direction.getDx();
+        int dy = direction.getDy();
         for (int j = 0; j <= 4; j++){
             for (int i = -4+j; i <= j; i++) {
                 Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
                 if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                     alignedPoints.add(alignedPoint);
                 }
-                if (alignedPoints.size() == required) {
-                    List<Point> extremities = getExtremities(alignedPoints, direction);
-                    Alignment possibleAlignment = new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction);
+                if (alignedPoints.size() == REQUIRED) {
+                    Alignment possibleAlignment = new Alignment(alignedPoints, direction);
                     if (!alignments.contains(possibleAlignment)) {
                         boolean valid = true;
-                        if (gameMode == Mode.TOUCHING) {
-                            for (Alignment alignment : alignments) {
-                                if (Sets.intersection(alignment.getPoints(), possibleAlignment.getPoints()).size() >= 2) {
+                        for (Alignment alignment : alignments) {
+                            if (Sets.intersection(alignment.getPoints(), possibleAlignment.getPoints()).size() >= gameMode.getMaxCommonPoints()) {
+                                if(gameMode.equals(Mode.TOUCHING)
+                                        || (gameMode.equals(Mode.DISJOINT) && alignment.getDirection().equals(possibleAlignment.getDirection()))) {
                                     valid = false;
                                     break;
-                                }
-                            }
-                        } else if (gameMode == Mode.DISJOINT) {
-                            for (Alignment alignment : alignments) {
-                                if (alignment.getDirection() == possibleAlignment.getDirection()) {
-                                    boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getEnd())
-                                            || List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getStart());
-                                    if (hasCommonExtremities) {
-                                        valid = false;
-                                        break;
-                                    }
                                 }
                             }
                         }
@@ -169,68 +161,6 @@ public class Board {
         return possibleAlignments;
     }
 
-    private List<Point> getExtremities(Set<Point> points, Direction direction) {
-        return switch (direction) {
-            case VERTICAL -> List.of(getMaxY(points), getMinY(points));
-            case HORIZONTAL, DIAGONAL_TOP, DIAGONAL_BOTTOM -> List.of(getMaxX(points), getMinX(points));
-        };
-    }
-
-    private Point getMaxX(Set<Point> points) {
-        Point maxX = null;
-        for(Point point : points) {
-            if(maxX == null)
-                maxX = point;
-            else if (maxX.getX() > point.getX())
-                maxX = point;
-        }
-        return maxX;
-    }
-
-    private Point getMinX(Set<Point> points) {
-        Point minX = null;
-        for(Point point : points) {
-            if(minX == null)
-                minX = point;
-            else if (minX.getX() < point.getX())
-                minX = point;
-        }
-        return minX;
-    }
-
-    private Point getMaxY(Set<Point> points) {
-        Point maxY = null;
-        for(Point point : points) {
-            if(maxY == null)
-                maxY = point;
-            else if (maxY.getY() > point.getY())
-                maxY = point;
-        }
-        return maxY;
-    }
-
-    private Point getMinY(Set<Point> points) {
-        Point minY = null;
-        for(Point point : points) {
-            if(minY == null)
-                minY = point;
-            else if (minY.getY() < point.getY())
-                minY = point;
-        }
-        return minY;
-    }
-
-    private Direction detectDirection(int dx, int dy) {
-        if ((dx == 0 && dy == 1) || (dx == 0 && dy == -1))
-            return Direction.VERTICAL;
-        if ((dx == 1 && dy == 0) || (dx == -1 && dy == 0))
-            return Direction.HORIZONTAL;
-        if ((dx == 1 && dy == 1) || (dx == -1 && dy == -1))
-            return Direction.DIAGONAL_TOP;
-        if ((dx == 1 && dy == -1) || (dx == -1 && dy == 1))
-            return Direction.DIAGONAL_BOTTOM;
-        return null;
-    }
 
     /**
      * Determines if the game is over.
