@@ -3,6 +3,7 @@ package fr.nathzaf.projects.morpionsolitaire;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Game {
 
@@ -67,11 +68,30 @@ public class Game {
         }
 
         Point point = new Point(x, y);
-
-        if (board.addPoint(point)) {
-            System.out.println("Point added successfully!");
-        } else {
+        List<Alignment> possibleAlignments = board.addPoint(point).stream().toList();
+        if (possibleAlignments.isEmpty()) {
             System.out.println("Invalid move! Try again.");
+        } else if (possibleAlignments.size() == 1) {
+            System.out.println("Point added successfully!");
+            board.addAlignment(possibleAlignments.get(0));
+        } else {
+            System.out.println("Select the alignment desired.");
+            for(int i = 0; i<possibleAlignments.size(); i++)
+                System.out.println(i+1 + ": " + possibleAlignments.get(i));
+            int desiredAlignments = 0;
+            while (desiredAlignments < 1 || desiredAlignments > possibleAlignments.size()) {
+                while (true) {
+                    try {
+                        desiredAlignments = scanner.nextInt();
+                        break;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Please enter an integer.");
+                        scanner.next();
+                    }
+                }
+            }
+            System.out.println("Point added successfully!");
+            board.addAlignment(possibleAlignments.get(desiredAlignments-1));
         }
         System.out.println();
     }

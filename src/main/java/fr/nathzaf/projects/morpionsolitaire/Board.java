@@ -68,13 +68,13 @@ public class Board {
     private boolean isValidMove(Point point) {
         if (points.contains(point) || isAlignedPoint(point)) return false;
 
-        Alignment detectedAlignment = detectAlignment(point);
-        if (detectedAlignment == null) return false;
+        Set<Alignment> detectedAlignments = detectAlignments(point);
+        if (detectedAlignments.isEmpty()) return false;
 
         if (gameMode == Mode.TOUCHING) {
             for (Alignment alignment : alignments) {
-                if (alignment.getDirection() == detectedAlignment.getDirection()) {
-                    long count = detectedAlignment.getPoints().stream()
+                for(Alignment possibleAlignment : detectedAlignments){
+                    long count = possibleAlignment.getPoints().stream()
                             .filter(alignment.getPoints()::contains)
                             .count();
                     if (count > 2) {
@@ -84,11 +84,13 @@ public class Board {
             }
         } else if (gameMode == Mode.DISJOINT) {
             for (Alignment alignment : alignments) {
-                if (alignment.getDirection() == detectedAlignment.getDirection()) {
-                    boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(detectedAlignment.getEnd())
-                            || List.of(alignment.getStart(), alignment.getEnd()).contains(detectedAlignment.getStart());
-                    if (hasCommonExtremities) {
-                        return false;
+                for(Alignment possibleAlignment : detectedAlignments) {
+                    if (alignment.getDirection() == possibleAlignment.getDirection()) {
+                        boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getEnd())
+                                || List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getStart());
+                        if (hasCommonExtremities) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -103,17 +105,18 @@ public class Board {
      * @param point the point to be added
      * @return true if the point was added, false otherwise
      */
-    public boolean addPoint(Point point) {
+    public Set<Alignment> addPoint(Point point) {
         if (isValidMove(point)) {
             points.add(point);
-            Alignment alignment = detectAlignment(point);
-            if (alignment != null) {
-                alignments.add(alignment);
-            }
-            score++;
-            return true;
+            return detectAlignments(point);
         }
-        return false;
+        return new HashSet<>();
+    }
+
+    public void addAlignment(Alignment alignment){
+        score++;
+        if (alignment != null)
+            alignments.add(alignment);
     }
 
     /**
@@ -122,34 +125,26 @@ public class Board {
      * @param point the point for which alignment needs to be detected
      * @return a set of points that are aligned, null if none found
      */
-    private Alignment detectAlignment(Point point) {
-        Alignment alignment;
+    private Set<Alignment> detectAlignments(Point point) {
+        Set<Alignment> alignments = new HashSet<>();
 
-        alignment = hasAlignment(point, 0, 1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, 0, 1, REQUIRED));
 
-        alignment = hasAlignment(point, 1, 0, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, 1, 0, REQUIRED));
 
-        alignment = hasAlignment(point, 1, 1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, 1, 1, REQUIRED));
 
-        alignment = hasAlignment(point, 1, -1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, 1, -1, REQUIRED));
 
-        alignment = hasAlignment(point, 0, -1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, 0, -1, REQUIRED));
 
-        alignment = hasAlignment(point, -1, 0, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, -1, 0, REQUIRED));
 
-        alignment = hasAlignment(point, -1, -1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, -1, -1, REQUIRED));
 
-        alignment = hasAlignment(point, -1, 1, REQUIRED);
-        if (alignment != null) return alignment;
+        alignments.addAll(hasAlignment(point, -1, 1, REQUIRED));
 
-        return null;
+        return alignments;
     }
 
     /**
@@ -159,9 +154,10 @@ public class Board {
      * @param dx       the x-direction
      * @param dy       the y-direction
      * @param required the number of aligned points required
-     * @return a set of points that are aligned, null if none found
+     * @return a set of Alignments that are valid
      */
-    private Alignment hasAlignment(Point point, int dx, int dy, int required) {
+    private Set<Alignment> hasAlignment(Point point, int dx, int dy, int required) {
+        Set<Alignment> possibleAlignments = new HashSet<>();
         Set<Point> alignedPoints = new HashSet<>();
         Direction direction = detectDirection(dx, dy);
         for (int i = -4; i <= 4; i++) {
@@ -175,15 +171,18 @@ public class Board {
             }
             List<Point> extremities = getExtremities(points, direction);
             if (alignedPoints.size() == required) {
+                boolean valid = true;
                 for(Alignment alignment : alignments){
                     if(alignment.equals(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction))){
-                        return null;
+                        valid = false;
+                        break;
                     }
                 }
-                return new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction);
+                if(valid)
+                    possibleAlignments.add(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction));
             }
         }
-        return null;
+        return possibleAlignments;
     }
 
     private List<Point> getExtremities(Set<Point> points, Direction direction) {
