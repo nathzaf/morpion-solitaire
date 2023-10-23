@@ -1,5 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire;
 
+import com.google.common.collect.Sets;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,33 +73,6 @@ public class Board {
         Set<Alignment> detectedAlignments = detectAlignments(point);
         if (detectedAlignments.isEmpty()) return false;
 
-        if (gameMode == Mode.TOUCHING) {
-            boolean valid = false;
-            for (Alignment alignment : alignments) {
-                for(Alignment possibleAlignment : detectedAlignments){
-                    long count = possibleAlignment.getPoints().stream()
-                            .filter(alignment.getPoints()::contains)
-                            .count();
-                    if (count <= 2) {
-                        valid = true;
-                    }
-                    if(!valid) return false;
-                }
-            }
-        } else if (gameMode == Mode.DISJOINT) {
-            for (Alignment alignment : alignments) {
-                for(Alignment possibleAlignment : detectedAlignments) {
-                    if (alignment.getDirection() == possibleAlignment.getDirection()) {
-                        boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getEnd())
-                                || List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getStart());
-                        if (hasCommonExtremities) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
         return true;
     }
 
@@ -130,21 +105,13 @@ public class Board {
     private Set<Alignment> detectAlignments(Point point) {
         Set<Alignment> possibleAlignments = new HashSet<>();
 
-        possibleAlignments.addAll(hasAlignment(point, 0, 1, REQUIRED));
+        possibleAlignments.addAll(hasAlignment(point, 0, 1, REQUIRED)); // TODO Refacto en utilisation Direction
 
         possibleAlignments.addAll(hasAlignment(point, 1, 0, REQUIRED));
 
         possibleAlignments.addAll(hasAlignment(point, 1, 1, REQUIRED));
 
         possibleAlignments.addAll(hasAlignment(point, 1, -1, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, 0, -1, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, -1, 0, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, -1, -1, REQUIRED));
-
-        possibleAlignments.addAll(hasAlignment(point, -1, 1, REQUIRED));
 
         return possibleAlignments;
     }
@@ -162,29 +129,42 @@ public class Board {
         Set<Alignment> possibleAlignments = new HashSet<>();
         Set<Point> alignedPoints = new HashSet<>();
         Direction direction = detectDirection(dx, dy);
-        for (int i = -4; i <= 4; i++) {
-            Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
-            if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
-                alignedPoints.add(alignedPoint);
-            } else {
-                if (alignedPoints.size() < required) {
-                    alignedPoints.clear();
+        for (int j = 0; j <= 4; j++){
+            for (int i = -4+j; i <= j; i++) {
+                Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
+                if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
+                    alignedPoints.add(alignedPoint);
                 }
-            }
-            List<Point> extremities = getExtremities(points, direction);
-            if (alignedPoints.size() == required) {
-                boolean valid = true;
-                for(Alignment alignment : alignments){
-                    if(alignment.equals(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction))){
-                        valid = false;
-                        break;
+                if (alignedPoints.size() == required) {
+                    List<Point> extremities = getExtremities(alignedPoints, direction);
+                    Alignment possibleAlignment = new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction);
+                    if (!alignments.contains(possibleAlignment)) {
+                        boolean valid = true;
+                        if (gameMode == Mode.TOUCHING) {
+                            for (Alignment alignment : alignments) {
+                                if (Sets.intersection(alignment.getPoints(), possibleAlignment.getPoints()).size() >= 2) {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                        } else if (gameMode == Mode.DISJOINT) {
+                            for (Alignment alignment : alignments) {
+                                if (alignment.getDirection() == possibleAlignment.getDirection()) {
+                                    boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getEnd())
+                                            || List.of(alignment.getStart(), alignment.getEnd()).contains(possibleAlignment.getStart());
+                                    if (hasCommonExtremities) {
+                                        valid = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if(valid)
+                            possibleAlignments.add(possibleAlignment);
                     }
                 }
-                if(valid) {
-                    possibleAlignments.add(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction));
-                    alignedPoints.clear();
-                }
             }
+            alignedPoints.clear();
         }
         return possibleAlignments;
     }
