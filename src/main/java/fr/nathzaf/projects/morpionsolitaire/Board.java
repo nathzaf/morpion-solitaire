@@ -161,19 +161,17 @@ public class Board {
     private Alignment hasAlignment(Point point, int dx, int dy, int required) {
         Set<Point> alignedPoints = new HashSet<>();
         for (int i = -4; i <= 4; i++) {
-            if (i == 0) {
-                alignedPoints.add(point);
-                continue;
-            }
             Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
-            if (points.contains(alignedPoint)) {
+            if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                 alignedPoints.add(alignedPoint);
             } else {
-                alignedPoints.clear();
+                if (alignedPoints.size() < required) {
+                    alignedPoints.clear();
+                }
             }
 
             if (alignedPoints.size() == required) {
-                for(Alignment alignment : alignments){
+                for(Alignment alignment : alignments) {
                     if(alignment.equals(new Alignment(alignedPoints, detectDirection(dx, dy)))){
                         return null;
                     }
@@ -184,6 +182,7 @@ public class Board {
         return null;
     }
 
+
     private Direction detectDirection(int dx, int dy) {
         if (dx == 0 && dy == 1) return Direction.VERTICAL;
         if (dx == 1 && dy == 0) return Direction.HORIZONTAL;
@@ -191,7 +190,6 @@ public class Board {
         if (dx == 1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
         if (dx == 0 && dy == -1) return Direction.VERTICAL;
         if (dx == -1 && dy == 0) return Direction.HORIZONTAL;
-        if (dx == -1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
         return null;
     }
 
