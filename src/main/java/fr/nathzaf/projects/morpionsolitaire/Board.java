@@ -1,6 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Board {
@@ -14,6 +15,8 @@ public class Board {
     private int score = 0;
 
     private static final int INITIAL_SIZE = 4;
+
+    private static final int REQUIRED = 5;
 
 
     /**
@@ -122,28 +125,28 @@ public class Board {
     private Alignment detectAlignment(Point point) {
         Alignment alignment;
 
-        alignment = hasAlignment(point, 0, 1, 5);
+        alignment = hasAlignment(point, 0, 1, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, 1, 0, 5);
+        alignment = hasAlignment(point, 1, 0, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, 1, 1, 5);
+        alignment = hasAlignment(point, 1, 1, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, 1, -1, 5);
+        alignment = hasAlignment(point, 1, -1, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, 0, -1, 5);
+        alignment = hasAlignment(point, 0, -1, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, -1, 0, 5);
+        alignment = hasAlignment(point, -1, 0, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, -1, -1, 5);
+        alignment = hasAlignment(point, -1, -1, REQUIRED);
         if (alignment != null) return alignment;
 
-        alignment = hasAlignment(point, -1, 1, 5);
+        alignment = hasAlignment(point, -1, 1, REQUIRED);
         if (alignment != null) return alignment;
 
         return null;
@@ -160,6 +163,7 @@ public class Board {
      */
     private Alignment hasAlignment(Point point, int dx, int dy, int required) {
         Set<Point> alignedPoints = new HashSet<>();
+        Direction direction = detectDirection(dx, dy);
         for (int i = -4; i <= 4; i++) {
             if (i == 0) {
                 alignedPoints.add(point);
@@ -171,27 +175,79 @@ public class Board {
             } else {
                 alignedPoints.clear();
             }
-
+            List<Point> extremities = getExtremities(points, direction);
             if (alignedPoints.size() == required) {
                 for(Alignment alignment : alignments){
-                    if(alignment.equals(new Alignment(alignedPoints, detectDirection(dx, dy)))){
+                    if(alignment.equals(new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction))){
                         return null;
                     }
                 }
-                return new Alignment(alignedPoints, detectDirection(dx, dy));
+                return new Alignment(alignedPoints, extremities.get(0), extremities.get(1), direction);
             }
         }
         return null;
     }
 
+    private List<Point> getExtremities(Set<Point> points, Direction direction) {
+        return switch (direction) {
+            case VERTICAL -> List.of(getMaxY(points), getMinY(points));
+            case HORIZONTAL, DIAGONAL_TOP, DIAGONAL_BOTTOM -> List.of(getMaxX(points), getMinX(points));
+        };
+    }
+
+    private Point getMaxX(Set<Point> points) {
+        Point maxX = null;
+        for(Point point : points) {
+            if(maxX == null)
+                maxX = point;
+            else if (maxX.getX() > point.getX())
+                maxX = point;
+        }
+        return maxX;
+    }
+
+    private Point getMinX(Set<Point> points) {
+        Point minX = null;
+        for(Point point : points) {
+            if(minX == null)
+                minX = point;
+            else if (minX.getX() < point.getX())
+                minX = point;
+        }
+        return minX;
+    }
+
+    private Point getMaxY(Set<Point> points) {
+        Point maxY = null;
+        for(Point point : points) {
+            if(maxY == null)
+                maxY = point;
+            else if (maxY.getY() > point.getY())
+                maxY = point;
+        }
+        return maxY;
+    }
+
+    private Point getMinY(Set<Point> points) {
+        Point minY = null;
+        for(Point point : points) {
+            if(minY == null)
+                minY = point;
+            else if (minY.getY() < point.getY())
+                minY = point;
+        }
+        return minY;
+    }
+
     private Direction detectDirection(int dx, int dy) {
-        if (dx == 0 && dy == 1) return Direction.VERTICAL;
-        if (dx == 1 && dy == 0) return Direction.HORIZONTAL;
-        if (dx == 1 && dy == 1) return Direction.DIAGONAL_TOP;
-        if (dx == 1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
-        if (dx == 0 && dy == -1) return Direction.VERTICAL;
-        if (dx == -1 && dy == 0) return Direction.HORIZONTAL;
-        if (dx == -1 && dy == -1) return Direction.DIAGONAL_BOTTOM;
+        if ((dx == 0 && dy == 1) || (dx == 0 && dy == -1))
+            return Direction.VERTICAL;
+        if ((dx == 1 && dy == 0) || (dx == -1 && dy == 0))
+            return Direction.HORIZONTAL;
+        if ((dx == 1 && dy == 1) || (dx == -1 && dy == -1))
+            return Direction.DIAGONAL_TOP;
+        if ((dx == 1 && dy == -1) || (dx == -1 && dy == 1))
+            return Direction.DIAGONAL_BOTTOM;
         return null;
     }
 
