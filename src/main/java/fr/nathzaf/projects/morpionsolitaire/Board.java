@@ -85,9 +85,9 @@ public class Board {
         } else if (gameMode == Mode.DISJOINT) {
             for (Alignment alignment : alignments) {
                 if (alignment.getDirection() == detectedAlignment.getDirection()) {
-                    boolean hasCommonPoints = detectedAlignment.getPoints().stream()
-                            .anyMatch(alignment.getPoints()::contains);
-                    if (hasCommonPoints) {
+                    boolean hasCommonExtremities = List.of(alignment.getStart(), alignment.getEnd()).contains(detectedAlignment.getEnd())
+                            || List.of(alignment.getStart(), alignment.getEnd()).contains(detectedAlignment.getStart());
+                    if (hasCommonExtremities) {
                         return false;
                     }
                 }
