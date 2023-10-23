@@ -165,15 +165,13 @@ public class Board {
         Set<Point> alignedPoints = new HashSet<>();
         Direction direction = detectDirection(dx, dy);
         for (int i = -4; i <= 4; i++) {
-            if (i == 0) {
-                alignedPoints.add(point);
-                continue;
-            }
             Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
-            if (points.contains(alignedPoint)) {
+            if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                 alignedPoints.add(alignedPoint);
             } else {
-                alignedPoints.clear();
+                if (alignedPoints.size() < required) {
+                    alignedPoints.clear();
+                }
             }
             List<Point> extremities = getExtremities(points, direction);
             if (alignedPoints.size() == required) {
