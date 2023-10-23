@@ -162,7 +162,7 @@ public class Board {
         Set<Point> alignedPoints = new HashSet<>();
         for (int i = -4; i <= 4; i++) {
             Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
-            if (points.contains(alignedPoint) || alignedPoint.equals(point)) { // Ajout de la vérification alignedPoint.equals(point)
+            if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                 alignedPoints.add(alignedPoint);
             } else {
                 if (alignedPoints.size() < required) {
@@ -172,11 +172,11 @@ public class Board {
 
             if (alignedPoints.size() == required) {
                 for(Alignment alignment : alignments) {
-                    if(alignment.equals(new Alignment(new HashSet<>(alignedPoints), detectDirection(dx, dy)))){
+                    if(alignment.equals(new Alignment(alignedPoints, detectDirection(dx, dy)))){
                         return null;
                     }
                 }
-                return new Alignment(new HashSet<>(alignedPoints), detectDirection(dx, dy));
+                return new Alignment(alignedPoints, detectDirection(dx, dy));
             }
         }
         return null;
