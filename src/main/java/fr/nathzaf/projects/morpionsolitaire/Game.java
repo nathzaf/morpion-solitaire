@@ -1,6 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Game {
@@ -78,24 +79,30 @@ public class Game {
     public static void main(String[] args) {
         System.out.println("Welcome to the game!");
         Scanner scanner = new Scanner(System.in);
-        int choice = 0;
+        char choice = 0;
 
-        while(choice != 1 && choice != 2){
-            System.out.println("Choose your mode: 1. TOUCHING, 2. DISJOINT");
+        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId(), Mode.RANDOM_SOLVER.getId()).contains(choice)){
+            System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT ; R for Random Solver (in T mode)");
             while (true) {
                 try {
-                    choice = scanner.nextInt();
+                    choice = scanner.next().charAt(0);
                     break;
                 } catch (InputMismatchException e) {
-                    System.out.println("Please enter an integer.");
+                    System.out.println("Please enter an T ; D or R.");
                     scanner.next();
                 }
             }
         }
 
-        Mode mode = (choice == 1) ? Mode.TOUCHING : Mode.DISJOINT;
+        if(choice == Mode.TOUCHING.getId() || choice == Mode.DISJOINT.getId()) {
+            Mode mode = choice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
+            Game game = new Game(mode);
+            game.start();
+        }else if(choice == Mode.RANDOM_SOLVER.getId()){
+            Solver solver = new RandomSolver(Mode.TOUCHING);
+            solver.solve();
+        }
 
-        Game game = new Game(mode);
-        game.start();
+
     }
 }
