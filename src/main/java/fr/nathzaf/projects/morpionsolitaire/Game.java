@@ -67,11 +67,30 @@ public class Game {
         }
 
         Point point = new Point(x, y);
-
-        if (board.addPoint(point)) {
-            System.out.println("Point added successfully!");
-        } else {
+        List<Alignment> possibleAlignments = board.addPoint(point).stream().toList();
+        if (possibleAlignments.isEmpty()) {
             System.out.println("Invalid move! Try again.");
+        } else if (possibleAlignments.size() == 1) {
+            System.out.println("Point added successfully!");
+            board.addAlignment(possibleAlignments.get(0));
+        } else {
+            System.out.println("Select the alignment desired.");
+            for(int i = 0; i<possibleAlignments.size(); i++)
+                System.out.println(i+1 + ": " + possibleAlignments.get(i));
+            int desiredAlignments = 0;
+            while (desiredAlignments < 1 || desiredAlignments > possibleAlignments.size()) {
+                while (true) {
+                    try {
+                        desiredAlignments = scanner.nextInt();
+                        break;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Please enter an integer.");
+                        scanner.next();
+                    }
+                }
+            }
+            System.out.println("Point added successfully!");
+            board.addAlignment(possibleAlignments.get(desiredAlignments-1));
         }
         System.out.println();
     }
@@ -79,27 +98,25 @@ public class Game {
     public static void main(String[] args) {
         System.out.println("Welcome to the game!");
         Scanner scanner = new Scanner(System.in);
-        char choice = 0;
+        char modeChoice = 0;
+        char solverChoice = 0;
 
-        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId(), Mode.RANDOM_SOLVER.getId()).contains(choice)){
-            System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT ; R for Random Solver (in T mode)");
-            while (true) {
-                try {
-                    choice = scanner.next().charAt(0);
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println("Please enter an T ; D or R.");
-                    scanner.next();
-                }
-            }
+        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId()).contains(modeChoice)){
+            System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT");
+            modeChoice = scanner.next().charAt(0);
         }
 
-        if(choice == Mode.TOUCHING.getId() || choice == Mode.DISJOINT.getId()) {
-            Mode mode = choice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
+        while(!List.of('M', 'R').contains(solverChoice)){
+            System.out.println("Do you want to solve it: M for manually ; R for Random auto solver");
+            solverChoice = scanner.next().charAt(0);
+        }
+
+        Mode mode = modeChoice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
+        if(solverChoice == 'M'){
             Game game = new Game(mode);
             game.start();
-        }else if(choice == Mode.RANDOM_SOLVER.getId()){
-            Solver solver = new RandomSolver(Mode.TOUCHING);
+        } else if(solverChoice == 'R'){
+            Solver solver = new RandomSolver(mode);
             solver.solve();
         }
 

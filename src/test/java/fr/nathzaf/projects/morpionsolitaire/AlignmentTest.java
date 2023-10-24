@@ -12,7 +12,7 @@ public class AlignmentTest {
         IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> new Alignment(Set.of(new Point(1, 1),
                 new Point(1, 2),
                 new Point(2, 3),
-                new Point(0, 0))));
+                new Point(0, 0)), Direction.VERTICAL));
         Assertions.assertEquals("An alignment must be composed of 5 points.", e.getMessage());
     }
 
@@ -22,19 +22,19 @@ public class AlignmentTest {
                                                     new Point(1,2),
                                                     new Point(2,3),
                                                     new Point(0,0),
-                                                    new Point(0,1)));
+                                                    new Point(0,1)), Direction.VERTICAL);
 
         Alignment alignment2 = new Alignment(Set.of(new Point(0,1),
                                                     new Point(1,1),
                                                     new Point(2,3),
                                                     new Point(0,0),
-                                                    new Point(1,2)));
+                                                    new Point(1,2)), Direction.VERTICAL);
 
         Alignment alignment3 = new Alignment(Set.of(new Point(-1,-1),
                                                     new Point(1,2),
                                                     new Point(2,3),
                                                     new Point(0,0),
-                                                    new Point(0,1)));
+                                                    new Point(0,1)), Direction.VERTICAL);
 
         Assertions.assertEquals(alignment1, alignment2);
         Assertions.assertNotEquals(alignment1, alignment3);

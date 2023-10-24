@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class Alignment {
     private final ImmutableSet<Point> points;
+
     private final Direction direction;
 
     public Alignment(Set<Point> points, Direction direction) {
@@ -29,11 +30,19 @@ public class Alignment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Alignment alignment = (Alignment) o;
-        return Objects.equals(points, alignment.points) && direction == alignment.direction;
+        return Objects.equals(points, alignment.points);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(points, direction);
+        return Objects.hash(points);
+    }
+
+    @Override
+    public String toString() {
+        return "Alignment{" +
+                "points=" + points +
+                ", direction=" + direction +
+                '}';
     }
 }

@@ -1,6 +1,9 @@
 package fr.nathzaf.projects.morpionsolitaire;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
@@ -8,14 +11,16 @@ public class BoardTest {
 	@Test
 	public void testAddValidPointTouchingMode() {
 	    Board board = new Board(Mode.TOUCHING);
-	    assertTrue(board.addPoint(new Point(2, 3)), "Should allow point to complete the alignment in Touching mode");
+		Set<Alignment> alignments = board.addPoint(new Point(2, 3));
+		assertFalse(alignments.isEmpty());
 	}
 
 	@Test
 	public void testAddInvalidPointTouchingMode() {
 	    Board board = new Board(Mode.TOUCHING);
-	    Point existingPoint = new Point(1, 1); 
-	    assertFalse(board.addPoint(existingPoint), "Should not allow an already existing point");
+		Set<Alignment> alignments = board.addPoint(new Point(1, 1));
+		assertTrue(alignments.isEmpty());
+
 	}
 }
 
