@@ -256,7 +256,7 @@ public class Board {
         int maxY = allPoints.stream().mapToInt(Point::getY).max().orElse(0) + 1;
 
         StringBuilder builder = new StringBuilder();
-        for (int i = minY; i <= maxY; i++) {
+        for (int i = maxY; i >= minY; i--) {
             for (int j = minX; j <= maxX; j++) {
                 Point currentPoint = new Point(j, i);
                 if (isAlignedPoint(currentPoint)){
