@@ -94,9 +94,9 @@ public class Board {
     }
 
     public void addAlignment(Alignment alignment){
-        score++;
         if (alignment == null)
             throw new NullPointerException("Adding a null alignment");
+        score++;
         alignments.add(alignment);
     }
 
