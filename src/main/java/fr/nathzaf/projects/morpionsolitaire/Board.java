@@ -268,7 +268,7 @@ public class Board {
                 } else {
                     builder.append(".");
                 }
-                builder.append(" ");
+                builder.append("  ");
             }
             builder.append("\n");
         }
