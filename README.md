@@ -1,6 +1,6 @@
-# Morpion Solitaire
+# Morpion Solitaire - Advanced Java Course project
 
-A project for M1 MIAGE App
-
+## Authors
 Guillaume Pereira
+
 Nathan Zafizara-Benetrix
