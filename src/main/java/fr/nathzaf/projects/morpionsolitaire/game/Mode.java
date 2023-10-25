@@ -1,4 +1,4 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.game;
 
 public enum Mode {
     TOUCHING('T', 2), // 5T
@@ -9,16 +9,16 @@ public enum Mode {
 
     private final int maxCommonPoints;
 
-    Mode(char id, int maxCommonPoints){
+    Mode(char id, int maxCommonPoints) {
         this.id = id;
         this.maxCommonPoints = maxCommonPoints;
     }
 
-    public char getId(){
+    public char getId() {
         return id;
     }
 
-    public int getMaxCommonPoints(){
+    public int getMaxCommonPoints() {
         return maxCommonPoints;
     }
 }

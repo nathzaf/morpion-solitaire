@@ -1,4 +1,10 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.game;
+
+import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
+import fr.nathzaf.projects.morpionsolitaire.components.Board;
+import fr.nathzaf.projects.morpionsolitaire.components.Point;
+import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolver;
+import fr.nathzaf.projects.morpionsolitaire.solver.Solver;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -75,8 +81,8 @@ public class Game {
             board.addAlignment(possibleAlignments.get(0));
         } else {
             System.out.println("Select the alignment desired.");
-            for(int i = 0; i<possibleAlignments.size(); i++)
-                System.out.println(i+1 + ": " + possibleAlignments.get(i));
+            for (int i = 0; i < possibleAlignments.size(); i++)
+                System.out.println(i + 1 + ": " + possibleAlignments.get(i));
             int desiredAlignments = 0;
             while (desiredAlignments < 1 || desiredAlignments > possibleAlignments.size()) {
                 while (true) {
@@ -90,7 +96,7 @@ public class Game {
                 }
             }
             System.out.println("Point added successfully!");
-            board.addAlignment(possibleAlignments.get(desiredAlignments-1));
+            board.addAlignment(possibleAlignments.get(desiredAlignments - 1));
         }
         System.out.println();
     }
@@ -101,21 +107,21 @@ public class Game {
         char modeChoice = 0;
         char solverChoice = 0;
 
-        while(!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId()).contains(modeChoice)){
+        while (!List.of(Mode.TOUCHING.getId(), Mode.DISJOINT.getId()).contains(modeChoice)) {
             System.out.println("Choose your mode: T for TOUCHING ; D for DISJOINT");
             modeChoice = scanner.next().charAt(0);
         }
 
-        while(!List.of('M', 'R').contains(solverChoice)){
+        while (!List.of('M', 'R').contains(solverChoice)) {
             System.out.println("Do you want to solve it: M for manually ; R for Random auto solver");
             solverChoice = scanner.next().charAt(0);
         }
 
         Mode mode = modeChoice == Mode.TOUCHING.getId() ? Mode.TOUCHING : Mode.DISJOINT;
-        if(solverChoice == 'M'){
+        if (solverChoice == 'M') {
             Game game = new Game(mode);
             game.start();
-        } else if(solverChoice == 'R'){
+        } else if (solverChoice == 'R') {
             Solver solver = new RandomSolver(mode);
             solver.solve();
         }

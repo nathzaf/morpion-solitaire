@@ -1,4 +1,4 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.components;
 
 public class Point {
     private final int x;

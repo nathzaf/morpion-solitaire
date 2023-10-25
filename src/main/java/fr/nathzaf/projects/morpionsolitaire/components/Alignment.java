@@ -1,6 +1,7 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.ImmutableSet;
+
 import java.util.Objects;
 import java.util.Set;
 
