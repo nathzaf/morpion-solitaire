@@ -1,4 +1,4 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.components;
 
 public enum Direction {
     HORIZONTAL(1, 0),
@@ -10,16 +10,16 @@ public enum Direction {
 
     private final int dy;
 
-    Direction(int dx, int dy){
+    Direction(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    public int getDx(){
+    public int getDx() {
         return dx;
     }
 
-    public int getDy(){
+    public int getDy() {
         return dy;
     }
 }

@@ -1,11 +1,16 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.solver;
+
+import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
+import fr.nathzaf.projects.morpionsolitaire.components.Board;
+import fr.nathzaf.projects.morpionsolitaire.components.Point;
+import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 public class RandomSolver implements Solver {
-    
+
     private final Board board;
     private final Random random = new Random();
 
@@ -18,8 +23,8 @@ public class RandomSolver implements Solver {
         System.out.println("Solving in progress, please wait...");
         while (!board.isGameOver()) {
             Set<Point> possibleMoves = board.getPossibleMoves();
-            
-            if(possibleMoves.isEmpty()) {
+
+            if (possibleMoves.isEmpty()) {
                 break;
             }
 
