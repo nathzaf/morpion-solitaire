@@ -1,4 +1,6 @@
-# maven-project
-A simple template for maven projects
+# Morpion Solitaire
 
-Don't forget to rename packages, group ID and artifact ID :)
+A project for M1 MIAGE App
+
+Guillaume Pereira
+Nathan Zafizara-Benetrix
