@@ -1,6 +1,7 @@
-package fr.nathzaf.projects.morpionsolitaire;
+package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.Sets;
+import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class Board {
      * @param mode the game mode for this board
      */
     public Board(Mode mode) {
-        if(mode == null)
+        if (mode == null)
             throw new NullPointerException("Mode can't be null.");
         points = new HashSet<>();
         alignments = new HashSet<>();
@@ -93,7 +94,7 @@ public class Board {
         return new HashSet<>();
     }
 
-    public void addAlignment(Alignment alignment){
+    public void addAlignment(Alignment alignment) {
         if (alignment == null)
             throw new NullPointerException("Adding a null alignment");
         score++;
@@ -111,7 +112,7 @@ public class Board {
             throw new NullPointerException();
         Set<Alignment> possibleAlignments = new HashSet<>();
 
-        for(Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values()) {
             possibleAlignments.addAll(hasAlignment(point, direction));
         }
 
@@ -121,7 +122,7 @@ public class Board {
     /**
      * Checks for alignment with a given direction and required count.
      *
-     * @param point    the starting point
+     * @param point     the starting point
      * @param direction the direction
      * @return a set of Alignments that are valid
      */
@@ -132,8 +133,8 @@ public class Board {
         Set<Point> alignedPoints = new HashSet<>();
         int dx = direction.getDx();
         int dy = direction.getDy();
-        for (int j = 0; j <= 4; j++){
-            for (int i = -4+j; i <= j; i++) {
+        for (int j = 0; j <= 4; j++) {
+            for (int i = -4 + j; i <= j; i++) {
                 Point alignedPoint = new Point(point.getX() + i * dx, point.getY() + i * dy);
                 if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                     alignedPoints.add(alignedPoint);
@@ -144,14 +145,14 @@ public class Board {
                         boolean valid = true;
                         for (Alignment alignment : alignments) {
                             if (Sets.intersection(alignment.getPoints(), possibleAlignment.getPoints()).size() >= gameMode.getMaxCommonPoints()) {
-                                if(gameMode.equals(Mode.TOUCHING)
+                                if (gameMode.equals(Mode.TOUCHING)
                                         || (gameMode.equals(Mode.DISJOINT) && alignment.getDirection().equals(possibleAlignment.getDirection()))) {
                                     valid = false;
                                     break;
                                 }
                             }
                         }
-                        if(valid)
+                        if (valid)
                             possibleAlignments.add(possibleAlignment);
                     }
                 }
@@ -234,9 +235,9 @@ public class Board {
         return new HashSet<>(points);
     }
 
-    private boolean isAlignedPoint(Point point){
-        for(Alignment alignment : alignments) {
-            if(alignment.getPoints().contains(point))
+    private boolean isAlignedPoint(Point point) {
+        for (Alignment alignment : alignments) {
+            if (alignment.getPoints().contains(point))
                 return true;
         }
         return false;
@@ -246,7 +247,7 @@ public class Board {
     public String toString() {
         Set<Point> possibleMoves = getPossibleMoves();
         Set<Point> allPoints = new HashSet<>(points);
-        for(Alignment alignment : alignments)
+        for (Alignment alignment : alignments)
             allPoints.addAll(alignment.getPoints());
         allPoints.addAll(possibleMoves);
 
@@ -259,7 +260,7 @@ public class Board {
         for (int i = maxY; i >= minY; i--) {
             for (int j = minX; j <= maxX; j++) {
                 Point currentPoint = new Point(j, i);
-                if (isAlignedPoint(currentPoint)){
+                if (isAlignedPoint(currentPoint)) {
                     builder.append("O");
                 } else if (points.contains(currentPoint)) {
                     builder.append("X");
