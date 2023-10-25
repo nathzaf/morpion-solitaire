@@ -1,2 +1,6 @@
-# maven-project
-A simple template for maven project
+# Morpion Solitaire - Advanced Java Course project
+
+## Authors
+Guillaume Pereira
+
+Nathan Zafizara-Benetrix
