@@ -1,6 +1,6 @@
 package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
-import fr.nathzaf.projects.morpionsolitaire.game.GameManagerFx;
+import fr.nathzaf.projects.morpionsolitaire.game.GameManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +18,7 @@ public class EndOfGameController {
     @FXML
     private Text playerScoreText;
 
-    public void displayEndOfGame(GameManagerFx gameManager) {
+    public void displayEndOfGame(GameManager gameManager) {
         playerScoreText.setText(String.valueOf(gameManager.getBoard().getScore()));
     }
 

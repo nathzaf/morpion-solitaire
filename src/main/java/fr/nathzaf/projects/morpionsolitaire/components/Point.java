@@ -1,8 +1,11 @@
 package fr.nathzaf.projects.morpionsolitaire.components;
 
 public class Point {
+
     private final int x;
+
     private final int y;
+
     private final int score;
 
     public Point(int x, int y) {

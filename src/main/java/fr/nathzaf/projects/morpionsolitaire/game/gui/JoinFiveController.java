@@ -2,8 +2,8 @@ package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
-import fr.nathzaf.projects.morpionsolitaire.game.GameManagerFx;
-import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolverFx;
+import fr.nathzaf.projects.morpionsolitaire.game.GameManager;
+import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,7 +48,7 @@ public class JoinFiveController {
     @FXML
     private Button randomSolverButton;
 
-    private GameManagerFx gameManager;
+    private GameManager gameManager;
 
     private Scene scene;
 
@@ -93,7 +93,7 @@ public class JoinFiveController {
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
                     for (Alignment alignment : possibleAlignments)
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
-                    if(!multipleAlignmentsCandidates.contains(convertPointIdToPoint(circle.getId())))
+                    if(!multipleAlignmentsCandidates.contains(selectedPoint))
                         circle.setOpacity(1);
                     for (Point point : possibleAlignmentsMap.keySet()) {
                         setCircleOpacityFromPoint(point, 1);
@@ -129,11 +129,12 @@ public class JoinFiveController {
                     setCircleOpacityFromPoint(candidate, 0);
                 setCircleColorFromPoint(candidate, Color.BLACK);
             }
+            multipleAlignmentsCandidates.clear();
         });
     }
 
     public void reset(ActionEvent event) throws IOException {
-        GameManagerFx gameManager = new GameManagerFx(this.gameManager.getBoard().getGameMode(),
+        GameManager gameManager = new GameManager(this.gameManager.getBoard().getGameMode(),
                 this.gameManager.getPlayerName());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
@@ -149,7 +150,7 @@ public class JoinFiveController {
     }
 
     public void randomSolver(ActionEvent event) {
-        RandomSolverFx randomSolver = new RandomSolverFx(gameManager.getBoard());
+        RandomSolver randomSolver = new RandomSolver(gameManager.getBoard());
         randomSolver.solve();
         updateBoard();
         surrenderButton.setText("Go to end screen");
@@ -261,7 +262,7 @@ public class JoinFiveController {
         joinFivePane.getChildren().add(line);
     }
 
-    public void initializeGame(Scene scene, GameManagerFx gameManager) {
+    public void initializeGame(Scene scene, GameManager gameManager) {
         this.gameManager = gameManager;
         this.scene = scene;
         playerScoreText.setText("0");

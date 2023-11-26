@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Alignment {
+
     private final ImmutableSet<Point> points;
 
     private final Direction direction;

@@ -13,7 +13,11 @@ public class BoardTest {
     @Test
     public void testAddValidPointTouchingMode() {
         Board board = new Board(Mode.TOUCHING);
-        Set<Alignment> alignments = board.addPoint(new Point(2, 3));
+        board.getPoints().add(new Point(3,6));
+        board.getPoints().add(new Point(4,6));
+        board.getPoints().add(new Point(5,6));
+        board.getPoints().add(new Point(6,6));
+        Set<Alignment> alignments = board.addPoint(new Point(7, 6));
         assertFalse(alignments.isEmpty());
     }
 

@@ -18,4 +18,5 @@ public class GameFx extends Application {
         stage.setResizable(false);
         stage.show();
     }
+
 }

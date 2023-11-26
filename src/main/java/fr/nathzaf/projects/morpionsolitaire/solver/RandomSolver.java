@@ -3,26 +3,23 @@ package fr.nathzaf.projects.morpionsolitaire.solver;
 import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
 import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
-import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-@Deprecated
 public class RandomSolver implements Solver {
 
     private final Board board;
-    private final Random random = new Random();
 
-    public RandomSolver(Mode mode) {
-        this.board = new Board(mode);
+    public RandomSolver(Board board) {
+        this.board = board;
     }
 
     @Override
     public void solve() {
-        System.out.println("Solving in progress, please wait...");
-        while (!board.isGameOver()) {
+        Random random = new Random();
+        while (board.getPossibleMoves().size() > 0) {
             Set<Point> possibleMoves = board.getPossibleMoves();
 
             if (possibleMoves.isEmpty()) {
@@ -42,8 +39,6 @@ public class RandomSolver implements Solver {
                 board.addAlignment(possibleAlignments.get(randomAlignmentIndex));
             }
         }
-        System.out.println(board);
-        System.out.println("Game over! Score: " + board.getScore());
     }
 
 }
