@@ -1,6 +1,6 @@
 package fr.nathzaf.projects.morpionsolitaire.main;
 
-import fr.nathzaf.projects.morpionsolitaire.game.GameFx;
+import fr.nathzaf.projects.morpionsolitaire.game.gui.GameFx;
 import javafx.application.Application;
 
 public class MainFx {
