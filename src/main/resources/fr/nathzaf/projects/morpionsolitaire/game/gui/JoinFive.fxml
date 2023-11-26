@@ -299,12 +299,14 @@
   <Circle centerX="725.0" centerY="235.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y13" />
   <Circle centerX="725.0" centerY="205.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y14" />
   <Circle centerX="725.0" centerY="175.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y15" />
-   <Button layoutX="250.0" layoutY="66.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
-   <Button layoutX="375.0" layoutY="66.0" mnemonicParsing="false" onAction="#hint" text="Hint" />
-   <Button layoutX="557.0" layoutY="68.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
-   <Button layoutX="663.0" layoutY="68.0" mnemonicParsing="false" onAction="#randomSolver" text="Random solver" />
+   <Button layoutX="246.0" layoutY="66.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+   <Button fx:id="hintButton" layoutX="375.0" layoutY="66.0" mnemonicParsing="false" onAction="#hint" text="Hint" />
+   <Button fx:id="undoButton" layoutX="557.0" layoutY="68.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+   <Button fx:id="randomSolverButton" layoutX="661.0" layoutY="68.0" mnemonicParsing="false" onAction="#randomSolver" text="Random solver" />
    <Text layoutX="461.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your score" textAlignment="CENTER" />
    <Text fx:id="playerScoreText" layoutX="490.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
    <Text fx:id="playerName" layoutX="94.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
-   <Button fx:id="goToEndScreenButton" disable="true" layoutX="445.0" layoutY="706.0" mnemonicParsing="false" onAction="#goToEndScreen" opacity="0.0" text="Go to end screen" />
+   <Button fx:id="surrenderButton" layoutX="465.0" layoutY="707.0" mnemonicParsing="false" onAction="#surrender" text="Surrender" />
+   <Button layoutX="241.0" layoutY="707.0" mnemonicParsing="false" onAction="#returnToMainTitle" text="Return to main title" />
+   <Button layoutX="710.0" layoutY="707.0" mnemonicParsing="false" onAction="#quit" text="Quit" />
 </Pane>

@@ -4,6 +4,7 @@ import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
 import fr.nathzaf.projects.morpionsolitaire.game.GameManagerFx;
 import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolverFx;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +37,16 @@ public class JoinFiveController {
     private Text playerName;
 
     @FXML
-    private Button goToEndScreenButton;
+    private Button surrenderButton;
+
+    @FXML
+    private Button hintButton;
+
+    @FXML
+    private Button undoButton;
+
+    @FXML
+    private Button randomSolverButton;
 
     private GameManagerFx gameManager;
 
@@ -46,42 +54,82 @@ public class JoinFiveController {
 
     private boolean hint = false;
 
+    private boolean multipleAlignments = false;
+
+    private Set<Point> multipleAlignmentsCandidates = new HashSet<>();
+
     private Set<Point> hintPoints = new HashSet<>();
 
     public void selectPoint(MouseEvent event) throws IOException {
-        Circle circle = (Circle) event.getSource();
+        if(!multipleAlignments) {
+            Circle circle = (Circle) event.getSource();
 
-        Point selectedPoint = convertPointIdToPoint(circle.getId());
+            Point selectedPoint = convertPointIdToPoint(circle.getId());
 
-        if(hint) {
-            hint = false;
-            hintPoints.remove(selectedPoint);
-            for(Point point : hintPoints)
-                setCircleOpacityFromPoint(point, 0);
-        }
+            if (hint) {
+                hint = false;
+                hintPoints.remove(selectedPoint);
+                for (Point point : hintPoints)
+                    setCircleOpacityFromPoint(point, 0);
+            }
 
-        if(gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 0
-        || !gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 1)
+            if (gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 0
+                    || !gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 1)
                 throw new IllegalStateException("Illegal state of the board.");
 
-        if(!gameManager.getBoard().getPoints().contains(selectedPoint)
-                && gameManager.getBoard().getPossibleMoves().contains(selectedPoint)) {
-            List<Alignment> possibleAlignments = gameManager.getBoard().addPoint(selectedPoint).stream().toList();
-            if(possibleAlignments.size() == 1) {
-                gameManager.getBoard().addAlignment(possibleAlignments.get(0));
-                circle.setOpacity(1);
-                drawLine(possibleAlignments.get(0));
-            } else if (possibleAlignments.size() > 1) {
-                gameManager.getBoard().addAlignment(possibleAlignments.get(0));
-                circle.setOpacity(1);
-                drawLine(possibleAlignments.get(0));
-                //TODO A FAIRE
+            if (!gameManager.getBoard().getPoints().contains(selectedPoint)
+                    && gameManager.getBoard().getPossibleMoves().contains(selectedPoint)) {
+                List<Alignment> possibleAlignments = gameManager.getBoard().addPoint(selectedPoint).stream().toList();
+                if (possibleAlignments.size() == 1) {
+                    gameManager.getBoard().addAlignment(possibleAlignments.get(0));
+                    circle.setOpacity(1);
+                    drawLine(possibleAlignments.get(0));
+                } else if (possibleAlignments.size() > 1) {
+                    hintButton.setDisable(true);
+                    randomSolverButton.setDisable(true);
+                    undoButton.setDisable(true);
+                    multipleAlignments = true;
+                    Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
+                    multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
+                    for (Alignment alignment : possibleAlignments)
+                        possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
+                    if(!multipleAlignmentsCandidates.contains(convertPointIdToPoint(circle.getId())))
+                        circle.setOpacity(1);
+                    for (Point point : possibleAlignmentsMap.keySet()) {
+                        setCircleOpacityFromPoint(point, 1);
+                        setCircleColorFromPoint(point, Color.GREEN);
+                        setCircleCreatingAlignmentFormPoint(point, possibleAlignmentsMap.get(point));
+                    }
+                }
+                addNumberOnPoint(circle, gameManager.getBoard().getScore());
+                updatePlayerScoreText();
+                if (gameManager.getBoard().getPossibleMoves().isEmpty())
+                    endOfGame();
             }
-            addNumberOnPoint(circle, gameManager.getBoard().getScore());
-            updatePlayerScoreText();
-            if(gameManager.getBoard().getPossibleMoves().isEmpty())
-                endOfGame();
         }
+    }
+
+    private void setCircleCreatingAlignmentFormPoint(Point point, Alignment alignment) {
+        Circle circle = (Circle) scene.lookup("#x" + point.getX() + "y" + point.getY());
+        if(circle == null)
+            throw new IllegalArgumentException("This point is not associated to a circle.");
+        circle.setOnMouseClicked((MouseEvent e) -> {
+            hintButton.setDisable(false);
+            randomSolverButton.setDisable(false);
+            undoButton.setDisable(false);
+            gameManager.getBoard().addAlignment(alignment);
+            circle.setFill(Color.BLACK);
+            drawLine(alignment);
+            multipleAlignmentsCandidates.remove(point);
+            multipleAlignments = false;
+            for(Point candidate : multipleAlignmentsCandidates) {
+                if(gameManager.getBoard().getPoints().contains(candidate))
+                    setCircleOpacityFromPoint(candidate, 1);
+                else
+                    setCircleOpacityFromPoint(candidate, 0);
+                setCircleColorFromPoint(candidate, Color.BLACK);
+            }
+        });
     }
 
     public void reset(ActionEvent event) throws IOException {
@@ -104,12 +152,29 @@ public class JoinFiveController {
         RandomSolverFx randomSolver = new RandomSolverFx(gameManager.getBoard());
         randomSolver.solve();
         updateBoard();
-        goToEndScreenButton.setDisable(false);
-        goToEndScreenButton.setOpacity(1);
+        surrenderButton.setText("Go to end screen");
+        undoButton.setDisable(true);
+        hintButton.setDisable(true);
     }
 
-    public void goToEndScreen(ActionEvent event) throws IOException {
+    public void surrender(ActionEvent event) throws IOException {
         endOfGame();
+    }
+
+    public void returnToMainTitle(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ChoosePlayerNameAndMode.fxml"));
+        Parent root = loader.load();
+
+        ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void quit(ActionEvent event){
+        Platform.exit();
     }
 
     public void undo(ActionEvent event) {
@@ -137,6 +202,13 @@ public class JoinFiveController {
         if(circle == null)
             throw new IllegalArgumentException("This point is not associated to a circle.");
         circle.setOpacity(opacity);
+    }
+
+    private void setCircleColorFromPoint(Point point, Color color) {
+        Circle circle = (Circle) scene.lookup("#x" + point.getX() + "y" + point.getY());
+        if(circle == null)
+            throw new IllegalArgumentException("This point is not associated to a circle.");
+        circle.setFill(color);
     }
 
     private void addNumberOnPoint(Circle circle, int number) {

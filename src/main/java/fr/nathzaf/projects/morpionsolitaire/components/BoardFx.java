@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BoardFx {
@@ -17,10 +16,7 @@ public class BoardFx {
 
     private int score = 0;
 
-    private static final int INITIAL_SIZE = 4;
-
     private static final int REQUIRED = 5;
-
 
     /**
      * Constructs a new board with a given mode.
@@ -33,34 +29,6 @@ public class BoardFx {
         points = new HashSet<>();
         alignments = new HashSet<>();
         this.gameMode = mode;
-    }
-
-    /**
-     * Initializes the board with points.
-     */
-    private void initializeBoard() {
-        int x = 0;
-        int y = 0;
-
-        if (INITIAL_SIZE <= 3) {
-            throw new IllegalArgumentException("The width of the cross must be greater than 3.");
-        }
-
-        final int width = INITIAL_SIZE;
-        for (int i = 0; i < width; ++i) {
-            points.add(new Point(x + i, y));
-            points.add(new Point(x + i - width + 1, y + width - 1));
-            points.add(new Point(x + i + width - 1, y + width - 1));
-            points.add(new Point(x + i - width + 1, y + 2 * width - 2));
-            points.add(new Point(x + i + width - 1, y + 2 * width - 2));
-            points.add(new Point(x + i, y + 3 * width - 3));
-            points.add(new Point(x, y + i));
-            points.add(new Point(x + width - 1, y + i));
-            points.add(new Point(x - width + 1, y + i + width - 1));
-            points.add(new Point(x + 2 * width - 2, y + i + width - 1));
-            points.add(new Point(x, y + i + 2 * width - 2));
-            points.add(new Point(x + width - 1, y + i + 2 * width - 2));
-        }
     }
 
     /**
@@ -162,7 +130,6 @@ public class BoardFx {
         return possibleAlignments;
     }
 
-
     /**
      * Gets the possible moves
      *
@@ -205,6 +172,14 @@ public class BoardFx {
         return undoPoint;
     }
 
+    private boolean isAlignedPoint(Point point) {
+        for (Alignment alignment : alignments) {
+            if (alignment.getPoints().contains(point))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Returns the current score of the board.
      *
@@ -214,14 +189,6 @@ public class BoardFx {
         return score;
     }
 
-    /**
-     * Resets the board to its initial state.
-     */
-    public void reset() {
-        points.clear();
-        alignments.clear();
-        initializeBoard();
-    }
 
     public Set<Point> getPoints() {
         return points;
@@ -233,52 +200,5 @@ public class BoardFx {
 
     public Set<Alignment> getAlignments() {
         return alignments;
-    }
-
-    private boolean isAlignedPoint(Point point) {
-        for (Alignment alignment : alignments) {
-            if (alignment.getPoints().contains(point))
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        Set<Point> possibleMoves = getPossibleMoves();
-        Set<Point> allPoints = new HashSet<>(points);
-        for (Alignment alignment : alignments)
-            allPoints.addAll(alignment.getPoints());
-        allPoints.addAll(possibleMoves);
-
-        int minX = allPoints.stream().mapToInt(Point::getX).min().orElse(0) - 1;
-        int maxX = allPoints.stream().mapToInt(Point::getX).max().orElse(0) + 1;
-        int minY = allPoints.stream().mapToInt(Point::getY).min().orElse(0) - 1;
-        int maxY = allPoints.stream().mapToInt(Point::getY).max().orElse(0) + 1;
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = maxY; i >= minY; i--) {
-            for (int j = minX; j <= maxX; j++) {
-                Point currentPoint = new Point(j, i);
-                if (isAlignedPoint(currentPoint)) {
-                    builder.append("O");
-                } else if (points.contains(currentPoint)) {
-                    builder.append("X");
-                } else if (possibleMoves.contains(currentPoint)) {
-                    builder.append("?");
-                } else {
-                    builder.append(".");
-                }
-                builder.append("  ");
-            }
-            builder.append("\n");
-        }
-
-        builder.append("\nPossible moves:\n");
-        for (Point move : possibleMoves) {
-            builder.append("[").append(move.getX()).append(", ").append(move.getY()).append("]\n");
-        }
-
-        return builder.toString();
     }
 }
