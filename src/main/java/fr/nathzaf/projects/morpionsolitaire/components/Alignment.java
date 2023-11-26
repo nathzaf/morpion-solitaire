@@ -11,12 +11,21 @@ public class Alignment {
 
     private final Direction direction;
 
+    private final int score;
+
     public Alignment(Set<Point> points, Direction direction) {
         if (points.size() != 5) {
             throw new IllegalArgumentException("An alignment must be composed of 5 points.");
         }
         this.points = ImmutableSet.copyOf(points);
         this.direction = direction;
+        score = -1;
+    }
+
+    public Alignment(Alignment alignment, int score) {
+        this.points = alignment.getPoints();
+        this.direction = alignment.getDirection();
+        this.score = score;
     }
 
     public List<Point> getExtremities() {
@@ -59,6 +68,10 @@ public class Alignment {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override

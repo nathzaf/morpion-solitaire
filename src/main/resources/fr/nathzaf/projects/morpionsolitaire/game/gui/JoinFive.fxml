@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Text?>
 
 <Pane fx:id="joinFivePane" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.nathzaf.projects.morpionsolitaire.game.gui.JoinFiveController">
   <Line endX="245.0" endY="655.0" startX="245.0" startY="145.0" stroke="BLACK" />
@@ -297,4 +299,12 @@
   <Circle centerX="725.0" centerY="235.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y13" />
   <Circle centerX="725.0" centerY="205.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y14" />
   <Circle centerX="725.0" centerY="175.0" fill="BLACK" onMouseClicked="#selectPoint" opacity="0" radius="5" fx:id="x15y15" />
+   <Button layoutX="250.0" layoutY="66.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+   <Button layoutX="375.0" layoutY="66.0" mnemonicParsing="false" onAction="#hint" text="Hint" />
+   <Button layoutX="557.0" layoutY="68.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+   <Button layoutX="663.0" layoutY="68.0" mnemonicParsing="false" onAction="#randomSolver" text="Random solver" />
+   <Text layoutX="461.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your score" textAlignment="CENTER" />
+   <Text fx:id="playerScoreText" layoutX="490.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
+   <Text fx:id="playerName" layoutX="94.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
+   <Button fx:id="goToEndScreenButton" disable="true" layoutX="445.0" layoutY="706.0" mnemonicParsing="false" onAction="#goToEndScreen" opacity="0.0" text="Go to end screen" />
 </Pane>

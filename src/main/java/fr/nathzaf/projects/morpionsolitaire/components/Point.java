@@ -3,10 +3,18 @@ package fr.nathzaf.projects.morpionsolitaire.components;
 public class Point {
     private final int x;
     private final int y;
+    private final int score;
 
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
+        score = -1;
+    }
+
+    public Point(Point point, int score) {
+        this.x = point.getX();
+        this.y = point.getY();
+        this.score = score;
     }
 
     public int getX() {
@@ -15,6 +23,10 @@ public class Point {
 
     public int getY() {
         return y;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override

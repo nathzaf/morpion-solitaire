@@ -28,8 +28,6 @@ public class GameManagerFx {
     }
 
 
-
-
     /**
      * Handles a single turn in the game, prompting the user for input and making the move.
      */
@@ -89,5 +87,9 @@ public class GameManagerFx {
 
     public BoardFx getBoard() {
         return board;
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 }

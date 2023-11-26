@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BoardFx {
@@ -87,7 +88,8 @@ public class BoardFx {
         if (point == null)
             throw new NullPointerException("Adding a null point");
         if (isValidMove(point)) {
-            points.add(point);
+            score++;
+            points.add(new Point(point, score));
             return detectAlignments(point);
         }
         return new HashSet<>();
@@ -96,8 +98,7 @@ public class BoardFx {
     public void addAlignment(Alignment alignment) {
         if (alignment == null)
             throw new NullPointerException("Adding a null alignment");
-        score++;
-        alignments.add(alignment);
+        alignments.add(new Alignment(alignment, score));
     }
 
     /**
@@ -163,33 +164,6 @@ public class BoardFx {
 
 
     /**
-     * Determines if the game is over.
-     *
-     * @return true if the game is over, false otherwise
-     */
-    public boolean isGameOver() {
-        int searchRadius = 4;
-
-        for (Point existingPoint : points) {
-            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
-                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
-                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
-
-                    if (points.contains(potentialPoint)) {
-                        continue;
-                    }
-
-                    if (isValidMove(potentialPoint)) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Gets the possible moves
      *
      * @return a set of points that can be played
@@ -212,6 +186,25 @@ public class BoardFx {
         return possibleMoves;
     }
 
+    public Point undo() {
+        Point undoPoint = null;
+        Alignment undoAlignmenet = null;
+        for(Point point : points) {
+            if(point.getScore() == score)
+                undoPoint = point;
+        }
+        for(Alignment alignment : alignments) {
+            if(alignment.getScore() == score)
+                undoAlignmenet = alignment;
+        }
+        if(undoPoint == null || undoAlignmenet == null)
+            throw new IllegalStateException("Can't undo.");
+        score--;
+        points.remove(undoPoint);
+        alignments.remove(undoAlignmenet);
+        return undoPoint;
+    }
+
     /**
      * Returns the current score of the board.
      *
@@ -232,6 +225,14 @@ public class BoardFx {
 
     public Set<Point> getPoints() {
         return points;
+    }
+
+    public Mode getGameMode() {
+        return gameMode;
+    }
+
+    public Set<Alignment> getAlignments() {
+        return alignments;
     }
 
     private boolean isAlignedPoint(Point point) {
