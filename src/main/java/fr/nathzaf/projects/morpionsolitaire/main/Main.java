@@ -8,6 +8,7 @@ import fr.nathzaf.projects.morpionsolitaire.solver.Solver;
 import java.util.List;
 import java.util.Scanner;
 
+@Deprecated
 public class Main {
 
     public static void main(String[] args) {

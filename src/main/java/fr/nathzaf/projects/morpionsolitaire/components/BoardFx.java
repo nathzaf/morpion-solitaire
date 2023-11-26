@@ -6,8 +6,7 @@ import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 import java.util.HashSet;
 import java.util.Set;
 
-@Deprecated
-public class Board {
+public class BoardFx {
 
     private final Set<Point> points;
 
@@ -27,13 +26,12 @@ public class Board {
      *
      * @param mode the game mode for this board
      */
-    public Board(Mode mode) {
+    public BoardFx(Mode mode) {
         if (mode == null)
             throw new NullPointerException("Mode can't be null.");
         points = new HashSet<>();
         alignments = new HashSet<>();
         this.gameMode = mode;
-        initializeBoard();
     }
 
     /**
@@ -233,7 +231,7 @@ public class Board {
     }
 
     public Set<Point> getPoints() {
-        return new HashSet<>(points);
+        return points;
     }
 
     private boolean isAlignedPoint(Point point) {

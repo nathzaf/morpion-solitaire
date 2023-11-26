@@ -1,7 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire.game;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
-import fr.nathzaf.projects.morpionsolitaire.components.Board;
+import fr.nathzaf.projects.morpionsolitaire.components.BoardFx;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
 
 import java.util.InputMismatchException;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class GameManagerFx {
 
-    private final Board board;
+    private final BoardFx board;
 
     private final Scanner scanner;
 
@@ -22,28 +22,13 @@ public class GameManagerFx {
      * @param mode The game mode, either TOUCHING or DISJOINT.
      */
     public GameManagerFx(Mode mode, String playerName) {
-        this.board = new Board(mode);
+        this.board = new BoardFx(mode);
         this.scanner = new Scanner(System.in);
         this.playerName = playerName;
     }
 
-    /**
-     * Starts and manages the game loop.
-     */
-    public void start() {
-        while (!board.isGameOver()) {
-            displayBoard();
-            playTurn();
-        }
-        System.out.println("Game over! Your score is: " + board.getScore());
-    }
 
-    /**
-     * Displays the current board state to the user.
-     */
-    private void displayBoard() {
-        System.out.println(board);
-    }
+
 
     /**
      * Handles a single turn in the game, prompting the user for input and making the move.
@@ -100,5 +85,9 @@ public class GameManagerFx {
             board.addAlignment(possibleAlignments.get(desiredAlignments - 1));
         }
         System.out.println();
+    }
+
+    public BoardFx getBoard() {
+        return board;
     }
 }

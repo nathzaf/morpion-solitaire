@@ -54,12 +54,11 @@ public class ChoosePlayerNameAndModeController {
             Parent root = loader.load();
 
             JoinFiveController joinFiveController = loader.getController();
-            joinFiveController.launchGame(gameManager);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            joinFiveController.initializeBoard(scene);
+            joinFiveController.initializeGame(scene, gameManager);
             stage.show();
         }
     }

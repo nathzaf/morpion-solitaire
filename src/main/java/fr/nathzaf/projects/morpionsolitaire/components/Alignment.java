@@ -2,6 +2,7 @@ package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +17,40 @@ public class Alignment {
         }
         this.points = ImmutableSet.copyOf(points);
         this.direction = direction;
+    }
+
+    public List<Point> getExtremities() {
+        Point minPoint = null;
+        Point maxPoint = null;
+
+        for(Point point : points) {
+            if(minPoint == null && maxPoint == null) {
+                minPoint = point;
+                maxPoint = point;
+                continue;
+            }
+            switch (direction) {
+                case VERTICAL:
+                    if (point.getY() < minPoint.getY())
+                        minPoint = point;
+                    if (point.getY() > maxPoint.getY())
+                        maxPoint = point;
+                    break;
+                case HORIZONTAL:
+                case DIAGONAL_TOP:
+                case DIAGONAL_BOTTOM:
+                    if (point.getX() < minPoint.getX())
+                        minPoint = point;
+                    if (point.getX() > maxPoint.getX())
+                        maxPoint = point;
+                    break;
+            }
+        }
+
+        if(minPoint == null && maxPoint == null || minPoint.equals(maxPoint))
+            throw new IllegalStateException("Two different extremities must have been found.");
+
+        return List.of(minPoint, maxPoint);
     }
 
     public ImmutableSet<Point> getPoints() {
