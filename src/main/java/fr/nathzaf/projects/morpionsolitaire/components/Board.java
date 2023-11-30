@@ -31,6 +31,27 @@ public class Board {
         this.gameMode = mode;
     }
 
+    public void intialize() {
+        final int x = 6;
+        final int y = 3;
+        final int width = 4;
+
+        for (int i = 0; i < width; i++) {
+            points.add(new Point(x + i, y));
+            points.add(new Point(x + i - width + 1, y + width - 1));
+            points.add(new Point(x + i + width - 1, y + width - 1));
+            points.add(new Point(x + i - width + 1, y + 2 * width - 2));
+            points.add(new Point(x + i + width - 1, y + 2 * width - 2));
+            points.add(new Point(x + i, y + 3 * width - 3));
+            points.add(new Point(x, y + i));
+            points.add(new Point(x + width - 1, y + i));
+            points.add(new Point(x - width + 1, y + i + width - 1));
+            points.add(new Point(x + 2 * width - 2, y + i + width - 1));
+            points.add(new Point(x, y + i + 2 * width - 2));
+            points.add(new Point(x + width - 1, y + i + 2 * width - 2));
+        }
+    }
+
     /**
      * Checks if the given point move is valid.
      *

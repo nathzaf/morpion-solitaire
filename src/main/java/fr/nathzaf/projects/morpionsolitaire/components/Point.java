@@ -20,6 +20,10 @@ public class Point {
         this.score = score;
     }
 
+    public String generateCircleId() {
+        return "#x" + x + "y" + y;
+    }
+
     public int getX() {
         return x;
     }
