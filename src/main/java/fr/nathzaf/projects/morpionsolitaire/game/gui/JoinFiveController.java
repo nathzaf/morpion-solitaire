@@ -37,6 +37,9 @@ public class JoinFiveController {
     private Text playerName;
 
     @FXML
+    private Text gameModeText;
+
+    @FXML
     private Button surrenderButton;
 
     @FXML
@@ -267,6 +270,7 @@ public class JoinFiveController {
         this.scene = scene;
         playerScoreText.setText("0");
         playerName.setText(gameManager.getPlayerName());
+        gameModeText.setText(gameManager.getBoard().getGameMode().getId());
         gameManager.getBoard().intialize();
         for (Point point : gameManager.getBoard().getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());

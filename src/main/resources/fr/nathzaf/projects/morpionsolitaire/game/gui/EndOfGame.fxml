@@ -7,8 +7,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.nathzaf.projects.morpionsolitaire.game.gui.EndOfGameController">
    <children>
       <Text layoutX="269.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game over!" />
-      <Text layoutX="250.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your score is:" />
-      <Text fx:id="playerScoreText" layoutX="330.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text fx:id="playerScoreText" layoutX="258.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
       <Button layoutX="186.0" layoutY="285.0" mnemonicParsing="false" onAction="#newGame" text="New game" />
       <Button layoutX="350.0" layoutY="285.0" mnemonicParsing="false" onAction="#quit" text="Quit" />
    </children>

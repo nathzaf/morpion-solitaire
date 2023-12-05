@@ -305,8 +305,9 @@
    <Button fx:id="randomSolverButton" layoutX="661.0" layoutY="68.0" mnemonicParsing="false" onAction="#randomSolver" text="Random solver" />
    <Text layoutX="461.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your score" textAlignment="CENTER" />
    <Text fx:id="playerScoreText" layoutX="490.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
-   <Text fx:id="playerName" layoutX="94.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
+   <Text fx:id="playerName" layoutX="95.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" />
    <Button fx:id="surrenderButton" layoutX="465.0" layoutY="707.0" mnemonicParsing="false" onAction="#surrender" text="Surrender" />
    <Button layoutX="241.0" layoutY="707.0" mnemonicParsing="false" onAction="#returnToMainTitle" text="Return to main title" />
    <Button layoutX="710.0" layoutY="707.0" mnemonicParsing="false" onAction="#quit" text="Quit" />
+   <Text fx:id="gameModeText" layoutX="862.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" />
 </Pane>

@@ -19,7 +19,7 @@ public class EndOfGameController {
     private Text playerScoreText;
 
     public void displayEndOfGame(GameManager gameManager) {
-        playerScoreText.setText(String.valueOf(gameManager.getBoard().getScore()));
+        playerScoreText.setText("Your score is: " + gameManager.getBoard().getScore());
     }
 
     public void newGame(ActionEvent event) throws IOException {
