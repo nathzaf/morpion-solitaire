@@ -34,7 +34,7 @@ public class JoinFiveController {
     private Text playerScoreText;
 
     @FXML
-    private Text playerName;
+    private Text playerNameText;
 
     @FXML
     private Text gameModeText;
@@ -269,7 +269,7 @@ public class JoinFiveController {
         this.gameManager = gameManager;
         this.scene = scene;
         playerScoreText.setText("0");
-        playerName.setText(gameManager.getPlayerName());
+        playerNameText.setText(gameManager.getPlayerName());
         gameModeText.setText(gameManager.getBoard().getGameMode().getId());
         gameManager.getBoard().intialize();
         for (Point point : gameManager.getBoard().getPoints()) {
