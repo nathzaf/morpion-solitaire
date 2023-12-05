@@ -1,7 +1,9 @@
 package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -14,21 +16,41 @@ public class Alignment {
 
     private final int score;
 
+    /**
+     * Constructor for 'default' alignment, especially for playable alignment test.
+     *
+     * @param points the set of points of the alignment
+     * @param direction the direction of the alignment
+     */
     public Alignment(Set<Point> points, Direction direction) {
-        if (points.size() != 5) {
+        if (points.size() != 5)
             throw new IllegalArgumentException("An alignment must be composed of 5 points.");
-        }
+        if (direction == null)
+            throw new NullPointerException("direction can't be null.");
         this.points = ImmutableSet.copyOf(points);
         this.direction = direction;
-        score = -1;
+        this.score = -1;
     }
 
+    /**
+     * Constructor for 'played' alignment.
+     *
+     * @param alignment the alignment to be copied
+     * @param score the associated score
+     */
     public Alignment(Alignment alignment, int score) {
+        if (alignment == null)
+            throw new NullPointerException("alignment can't be null.");
         this.points = alignment.getPoints();
         this.direction = alignment.getDirection();
         this.score = score;
     }
 
+    /**
+     * Gets the list of 2 extremities of an alignment.
+     *
+     * @return the list of 2 extremities of an alignment
+     */
     public List<Point> getExtremities() {
         Point minPoint = null;
         Point maxPoint = null;
@@ -57,7 +79,7 @@ public class Alignment {
             }
         }
 
-        if(minPoint == null && maxPoint == null || minPoint.equals(maxPoint))
+        if(minPoint == null || maxPoint == null || minPoint.equals(maxPoint))
             throw new IllegalStateException("Two different extremities must have been found.");
 
         return List.of(minPoint, maxPoint);

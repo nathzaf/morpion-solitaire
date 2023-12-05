@@ -271,7 +271,7 @@ public class JoinFiveController {
         playerScoreText.setText("0");
         playerNameText.setText(gameManager.getPlayerName());
         gameModeText.setText(gameManager.getBoard().getGameMode().getId());
-        gameManager.getBoard().intialize();
+        gameManager.getBoard().initialize();
         for (Point point : gameManager.getBoard().getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
             circle.setOpacity(1);

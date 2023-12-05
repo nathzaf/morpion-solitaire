@@ -21,10 +21,10 @@ public class ChoosePlayerNameAndModeController {
     private TextField playerNameTextField;
 
     @FXML
-    private RadioButton mode5T;
+    private RadioButton mode5TRadioButton;
 
     @FXML
-    private RadioButton mode5D;
+    private RadioButton mode5DRadioButton;
 
     private Mode mode = null;
 
@@ -64,9 +64,9 @@ public class ChoosePlayerNameAndModeController {
     }
 
     public void getMode(ActionEvent event) {
-        if(mode5D.isSelected())
+        if(mode5DRadioButton.isSelected())
             mode = Mode.DISJOINT;
-        else if(mode5T.isSelected())
+        else if(mode5TRadioButton.isSelected())
             mode = Mode.TOUCHING;
     }
 }

@@ -16,22 +16,29 @@ public class Board {
 
     private int score = 0;
 
+    private final String playerName;
+
     private static final int REQUIRED = 5;
 
     /**
      * Constructs a new board with a given mode.
      *
      * @param mode the game mode for this board
+     * @param playerName the name of the player
      */
-    public Board(Mode mode) {
+    public Board(Mode mode, String playerName) {
         if (mode == null)
             throw new NullPointerException("Mode can't be null.");
-        points = new HashSet<>();
-        alignments = new HashSet<>();
+        this.points = new HashSet<>();
+        this.alignments = new HashSet<>();
         this.gameMode = mode;
+        this.playerName = playerName;
     }
 
-    public void intialize() {
+    /**
+     * Initialize the board with the middle cross.
+     */
+    public void initialize() {
         final int x = 6;
         final int y = 3;
         final int width = 4;
@@ -84,6 +91,11 @@ public class Board {
         return new HashSet<>();
     }
 
+    /**
+     * Adds an alignment to the board.
+     *
+     * @param alignment the alignment to be added
+     */
     public void addAlignment(Alignment alignment) {
         if (alignment == null)
             throw new NullPointerException("Adding a null alignment");
@@ -174,6 +186,11 @@ public class Board {
         return possibleMoves;
     }
 
+    /**
+     * Undo the last point added, by deleting it, deleting the associated alignment and decrementing the score.
+     *
+     * @return the deleted point
+     */
     public Point undo() {
         Point undoPoint = null;
         Alignment undoAlignmenet = null;
@@ -193,6 +210,12 @@ public class Board {
         return undoPoint;
     }
 
+    /**
+     * Check if a point is contained in an alignment.
+     *
+     * @param point the point to check if it is aligned
+     * @return true if the point is aligned, false otherwise
+     */
     private boolean isAlignedPoint(Point point) {
         for (Alignment alignment : alignments) {
             if (alignment.getPoints().contains(point))
@@ -201,15 +224,9 @@ public class Board {
         return false;
     }
 
-    /**
-     * Returns the current score of the board.
-     *
-     * @return the score
-     */
     public int getScore() {
         return score;
     }
-
 
     public Set<Point> getPoints() {
         return points;

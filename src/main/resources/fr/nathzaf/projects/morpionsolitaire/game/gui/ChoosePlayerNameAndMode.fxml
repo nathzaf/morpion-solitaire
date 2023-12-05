@@ -11,12 +11,12 @@
    <children>
       <TextField fx:id="playerNameTextField" alignment="CENTER" layoutX="220.0" layoutY="112.0" />
       <Button layoutX="251.0" layoutY="252.0" mnemonicParsing="false" onAction="#startGame" text="Launch game !" />
-      <RadioButton fx:id="mode5T" layoutX="245.0" layoutY="182.0" mnemonicParsing="false" onAction="#getMode" text="5T">
+      <RadioButton fx:id="mode5TRadioButton" layoutX="245.0" layoutY="182.0" mnemonicParsing="false" onAction="#getMode" text="5T">
          <toggleGroup>
             <ToggleGroup fx:id="mode" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="mode5D" layoutX="319.0" layoutY="182.0" mnemonicParsing="false" onAction="#getMode" text="5D" toggleGroup="$mode" />
+      <RadioButton fx:id="mode5DRadioButton" layoutX="319.0" layoutY="182.0" mnemonicParsing="false" onAction="#getMode" text="5D" toggleGroup="$mode" />
       <Text layoutX="242.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your name here" />
    </children>
 </AnchorPane>
