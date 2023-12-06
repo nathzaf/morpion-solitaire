@@ -1,6 +1,6 @@
 package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
-import fr.nathzaf.projects.morpionsolitaire.game.GameManager;
+import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,7 +48,7 @@ public class ChoosePlayerNameAndModeController {
         }
 
         if (valid) {
-            GameManager gameManager = new GameManager(mode, playerName);
+            Board board = new Board(mode, playerName);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
             Parent root = loader.load();
@@ -58,7 +58,7 @@ public class ChoosePlayerNameAndModeController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            joinFiveController.initializeGame(scene, gameManager);
+            joinFiveController.initializeGame(scene, board);
             stage.show();
         }
     }

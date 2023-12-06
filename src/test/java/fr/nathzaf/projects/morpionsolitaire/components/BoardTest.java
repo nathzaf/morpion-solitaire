@@ -10,9 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
 
+    private static final String PLAYER_NAME = "player";
+
     @Test
     public void addValidPointTouchingModeTest() {
-        Board board = new Board(Mode.TOUCHING);
+        Board board = new Board(Mode.TOUCHING, PLAYER_NAME);
         board.getPoints().add(new Point(3,6));
         board.getPoints().add(new Point(4,6));
         board.getPoints().add(new Point(5,6));
@@ -23,14 +25,14 @@ public class BoardTest {
 
     @Test
     public void addInvalidPointTouchingModeTest() {
-        Board board = new Board(Mode.TOUCHING);
+        Board board = new Board(Mode.TOUCHING, PLAYER_NAME);
         Set<Alignment> alignments = board.addPoint(new Point(1, 1));
         assertTrue(alignments.isEmpty());
     }
 
     @Test
     public void getPossibleMovesTest() {
-        Board board = new Board(Mode.TOUCHING);
+        Board board = new Board(Mode.TOUCHING, PLAYER_NAME);
         board.getPoints().add(new Point(3,6));
         board.getPoints().add(new Point(4,6));
         board.getPoints().add(new Point(5,6));
@@ -40,7 +42,7 @@ public class BoardTest {
 
     @Test
     public void undoTest() {
-        Board board = new Board(Mode.TOUCHING);
+        Board board = new Board(Mode.TOUCHING, PLAYER_NAME);
         board.getPoints().add(new Point(3,6));
         board.getPoints().add(new Point(4,6));
         board.getPoints().add(new Point(5,6));

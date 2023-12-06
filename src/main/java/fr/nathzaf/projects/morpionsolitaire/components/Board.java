@@ -2,11 +2,15 @@ package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.Sets;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Board {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Board.class);
 
     private final Set<Point> points;
 
@@ -28,11 +32,16 @@ public class Board {
      */
     public Board(Mode mode, String playerName) {
         if (mode == null)
-            throw new NullPointerException("Mode can't be null.");
+            throw new NullPointerException("mode can't be null.");
+        if (playerName == null)
+            throw new NullPointerException("playerName can't be null.");
+        if (playerName.isBlank() || playerName.isEmpty())
+            throw new IllegalArgumentException("playerName can't be blank or empty.");
         this.points = new HashSet<>();
         this.alignments = new HashSet<>();
         this.gameMode = mode;
         this.playerName = playerName;
+        LOGGER.info("Created a new {} board for {}.", mode.getId(), playerName);
     }
 
     /**
@@ -57,21 +66,29 @@ public class Board {
             points.add(new Point(x, y + i + 2 * width - 2));
             points.add(new Point(x + width - 1, y + i + 2 * width - 2));
         }
+        LOGGER.info("Board initialized with a middle cross of with {}.", width);
     }
 
     /**
-     * Checks if the given point move is valid.
+     * Gets the possible moves
      *
-     * @param point the point to be checked
-     * @return true if the move is valid, false otherwise
+     * @return a set of points that can be played
      */
-    private boolean isValidMove(Point point) {
-        if (point == null)
-            throw new NullPointerException();
-        if (points.contains(point) || isAlignedPoint(point)) return false;
+    public Set<Point> getPossibleMoves() {
+        Set<Point> possibleMoves = new HashSet<>();
+        int searchRadius = 4;
 
-        Set<Alignment> detectedAlignments = detectAlignments(point);
-        return !detectedAlignments.isEmpty();
+        for (Point existingPoint : points) {
+            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
+                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
+                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
+                    if (!points.contains(potentialPoint) && isValidMove(potentialPoint)) {
+                        possibleMoves.add(potentialPoint);
+                    }
+                }
+            }
+        }
+        return possibleMoves;
     }
 
     /**
@@ -82,10 +99,11 @@ public class Board {
      */
     public Set<Alignment> addPoint(Point point) {
         if (point == null)
-            throw new NullPointerException("Adding a null point");
+            throw new NullPointerException("point can't be null");
         if (isValidMove(point)) {
             score++;
             points.add(new Point(point, score));
+            LOGGER.info("{} added to the board.", point);
             return detectAlignments(point);
         }
         return new HashSet<>();
@@ -98,8 +116,53 @@ public class Board {
      */
     public void addAlignment(Alignment alignment) {
         if (alignment == null)
-            throw new NullPointerException("Adding a null alignment");
+            throw new NullPointerException("alignment can't be null.");
         alignments.add(new Alignment(alignment, score));
+        LOGGER.info("{} added to the board.", alignment);
+        LOGGER.info("Score is now {}.", score);
+    }
+
+    /**
+     * Undo the last point added, by deleting it, deleting the associated alignment and decrementing the score.
+     *
+     * @return the deleted point
+     */
+    public Point undo() {
+        Point undoPoint = null;
+        Alignment undoAlignmenet = null;
+        for(Point point : points) {
+            if(point.getScore() == score)
+                undoPoint = point;
+        }
+        for(Alignment alignment : alignments) {
+            if(alignment.getScore() == score)
+                undoAlignmenet = alignment;
+        }
+        if(undoPoint == null || undoAlignmenet == null)
+            throw new IllegalStateException("Can't undo.");
+        score--;
+        points.remove(undoPoint);
+        alignments.remove(undoAlignmenet);
+        LOGGER.info("Undoing the last move");
+        LOGGER.info("{} has been removed.", undoPoint);
+        LOGGER.info("{} has been removed.", undoAlignmenet);
+        LOGGER.info("Score is now {}.", score);
+        return undoPoint;
+    }
+
+    /**
+     * Checks if the given point move is valid.
+     *
+     * @param point the point to be checked
+     * @return true if the move is valid, false otherwise
+     */
+    private boolean isValidMove(Point point) {
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
+        if (points.contains(point) || isAlignedPoint(point)) return false;
+
+        Set<Alignment> detectedAlignments = detectAlignments(point);
+        return !detectedAlignments.isEmpty();
     }
 
     /**
@@ -110,7 +173,7 @@ public class Board {
      */
     private Set<Alignment> detectAlignments(Point point) {
         if (point == null)
-            throw new NullPointerException();
+            throw new NullPointerException("point can't be null.");
         Set<Alignment> possibleAlignments = new HashSet<>();
 
         for (Direction direction : Direction.values()) {
@@ -128,8 +191,10 @@ public class Board {
      * @return a set of Alignments that are valid
      */
     private Set<Alignment> hasAlignment(Point point, Direction direction) {
-        if (point == null || direction == null)
-            throw new NullPointerException();
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
+        if (direction == null)
+            throw new NullPointerException("direction can't be null.");
         Set<Alignment> possibleAlignments = new HashSet<>();
         Set<Point> alignedPoints = new HashSet<>();
         int dx = direction.getDx();
@@ -164,59 +229,14 @@ public class Board {
     }
 
     /**
-     * Gets the possible moves
-     *
-     * @return a set of points that can be played
-     */
-    public Set<Point> getPossibleMoves() {
-        Set<Point> possibleMoves = new HashSet<>();
-        int searchRadius = 4;
-
-        for (Point existingPoint : points) {
-            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
-                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
-                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
-                    if (!points.contains(potentialPoint) && isValidMove(potentialPoint)) {
-                        possibleMoves.add(potentialPoint);
-                    }
-                }
-            }
-        }
-
-        return possibleMoves;
-    }
-
-    /**
-     * Undo the last point added, by deleting it, deleting the associated alignment and decrementing the score.
-     *
-     * @return the deleted point
-     */
-    public Point undo() {
-        Point undoPoint = null;
-        Alignment undoAlignmenet = null;
-        for(Point point : points) {
-            if(point.getScore() == score)
-                undoPoint = point;
-        }
-        for(Alignment alignment : alignments) {
-            if(alignment.getScore() == score)
-                undoAlignmenet = alignment;
-        }
-        if(undoPoint == null || undoAlignmenet == null)
-            throw new IllegalStateException("Can't undo.");
-        score--;
-        points.remove(undoPoint);
-        alignments.remove(undoAlignmenet);
-        return undoPoint;
-    }
-
-    /**
      * Check if a point is contained in an alignment.
      *
      * @param point the point to check if it is aligned
      * @return true if the point is aligned, false otherwise
      */
     private boolean isAlignedPoint(Point point) {
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
         for (Alignment alignment : alignments) {
             if (alignment.getPoints().contains(point))
                 return true;
@@ -238,5 +258,9 @@ public class Board {
 
     public Set<Alignment> getAlignments() {
         return alignments;
+    }
+
+    public String getPlayerName(){
+        return playerName;
     }
 }

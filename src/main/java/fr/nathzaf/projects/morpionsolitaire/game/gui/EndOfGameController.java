@@ -1,6 +1,6 @@
 package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
-import fr.nathzaf.projects.morpionsolitaire.game.GameManager;
+import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,16 +10,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class EndOfGameController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndOfGameController.class);
+
     @FXML
     private Text playerScoreText;
 
-    public void displayEndOfGame(GameManager gameManager) {
-        playerScoreText.setText("Your score is: " + gameManager.getBoard().getScore());
+    public void displayEndOfGame(Board board) {
+        playerScoreText.setText("Your score is: " + board.getScore());
+        LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
 
     public void newGame(ActionEvent event) throws IOException {

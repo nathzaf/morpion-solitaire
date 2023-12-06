@@ -111,10 +111,11 @@ public class Alignment {
     }
 
     @Override
-    public String toString() {
+    public String toString(){
         return "Alignment{" +
                 "points=" + points +
                 ", direction=" + direction +
+                ", score=" + score +
                 '}';
     }
 }

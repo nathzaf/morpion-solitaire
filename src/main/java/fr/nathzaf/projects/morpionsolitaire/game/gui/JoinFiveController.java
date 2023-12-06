@@ -1,8 +1,8 @@
 package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
+import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
-import fr.nathzaf.projects.morpionsolitaire.game.GameManager;
 import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,6 +19,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,6 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JoinFiveController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JoinFiveController.class);
 
     @FXML
     private Pane joinFivePane;
@@ -51,7 +55,7 @@ public class JoinFiveController {
     @FXML
     private Button randomSolverButton;
 
-    private GameManager gameManager;
+    private Board board;
 
     private Scene scene;
 
@@ -76,15 +80,15 @@ public class JoinFiveController {
                     setCircleOpacityFromPoint(point, 0);
             }
 
-            if (gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 0
-                    || !gameManager.getBoard().getPoints().contains(selectedPoint) && circle.getOpacity() == 1)
+            if (board.getPoints().contains(selectedPoint) && circle.getOpacity() == 0
+                    || !board.getPoints().contains(selectedPoint) && circle.getOpacity() == 1)
                 throw new IllegalStateException("Illegal state of the board.");
 
-            if (!gameManager.getBoard().getPoints().contains(selectedPoint)
-                    && gameManager.getBoard().getPossibleMoves().contains(selectedPoint)) {
-                List<Alignment> possibleAlignments = gameManager.getBoard().addPoint(selectedPoint).stream().toList();
+            if (!board.getPoints().contains(selectedPoint)
+                    && board.getPossibleMoves().contains(selectedPoint)) {
+                List<Alignment> possibleAlignments = board.addPoint(selectedPoint).stream().toList();
                 if (possibleAlignments.size() == 1) {
-                    gameManager.getBoard().addAlignment(possibleAlignments.get(0));
+                    board.addAlignment(possibleAlignments.get(0));
                     circle.setOpacity(1);
                     drawLine(possibleAlignments.get(0));
                 } else if (possibleAlignments.size() > 1) {
@@ -94,8 +98,11 @@ public class JoinFiveController {
                     multipleAlignments = true;
                     Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
-                    for (Alignment alignment : possibleAlignments)
+                    LOGGER.info("Multiple alignment possible for this point :");
+                    for (Alignment alignment : possibleAlignments){
+                        LOGGER.info("{}", alignment);
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
+                    }
                     if(!multipleAlignmentsCandidates.contains(selectedPoint))
                         circle.setOpacity(1);
                     for (Point point : possibleAlignmentsMap.keySet()) {
@@ -104,9 +111,9 @@ public class JoinFiveController {
                         setCircleCreatingAlignmentFormPoint(point, possibleAlignmentsMap.get(point));
                     }
                 }
-                addNumberOnPoint(circle, gameManager.getBoard().getScore());
+                addNumberOnPoint(circle, board.getScore());
                 updatePlayerScoreText();
-                if (gameManager.getBoard().getPossibleMoves().isEmpty())
+                if (board.getPossibleMoves().isEmpty())
                     endOfGame();
             }
         }
@@ -120,13 +127,13 @@ public class JoinFiveController {
             hintButton.setDisable(false);
             randomSolverButton.setDisable(false);
             undoButton.setDisable(false);
-            gameManager.getBoard().addAlignment(alignment);
+            board.addAlignment(alignment);
             circle.setFill(Color.BLACK);
             drawLine(alignment);
             multipleAlignmentsCandidates.remove(point);
             multipleAlignments = false;
             for(Point candidate : multipleAlignmentsCandidates) {
-                if(gameManager.getBoard().getPoints().contains(candidate))
+                if(board.getPoints().contains(candidate))
                     setCircleOpacityFromPoint(candidate, 1);
                 else
                     setCircleOpacityFromPoint(candidate, 0);
@@ -137,8 +144,10 @@ public class JoinFiveController {
     }
 
     public void reset(ActionEvent event) throws IOException {
-        GameManager gameManager = new GameManager(this.gameManager.getBoard().getGameMode(),
-                this.gameManager.getPlayerName());
+        Board board = new Board(this.board.getGameMode(),
+                this.board.getPlayerName());
+
+        LOGGER.info("Reseting the game.");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
         Parent root = loader.load();
@@ -148,12 +157,13 @@ public class JoinFiveController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        joinFiveController.initializeGame(scene, gameManager);
+        joinFiveController.initializeGame(scene, board);
         stage.show();
     }
 
     public void randomSolver(ActionEvent event) {
-        RandomSolver randomSolver = new RandomSolver(gameManager.getBoard());
+        LOGGER.info("Using random solver.");
+        RandomSolver randomSolver = new RandomSolver(board);
         randomSolver.solve();
         updateBoard();
         surrenderButton.setText("Go to end screen");
@@ -162,6 +172,7 @@ public class JoinFiveController {
     }
 
     public void surrender(ActionEvent event) throws IOException {
+        LOGGER.info("Surrending the game.");
         endOfGame();
     }
 
@@ -178,25 +189,27 @@ public class JoinFiveController {
     }
 
     public void quit(ActionEvent event){
+        LOGGER.info("Quitting the game.");
         Platform.exit();
     }
 
     public void undo(ActionEvent event) {
-        if(gameManager.getBoard().getScore() > 0) {
-            Point undoPoint = gameManager.getBoard().undo();
+        if(board.getScore() > 0) {
+            Point undoPoint = board.undo();
             setCircleOpacityFromPoint(undoPoint, 0);
             updatePlayerScoreText();
-            Line undoLine = (Line) scene.lookup("#line" + (gameManager.getBoard().getScore() + 1));
+            Line undoLine = (Line) scene.lookup("#line" + (board.getScore() + 1));
             joinFivePane.getChildren().remove(undoLine);
-            Text undoText = (Text) scene.lookup("#pointNumber" + (gameManager.getBoard().getScore() + 1));
+            Text undoText = (Text) scene.lookup("#pointNumber" + (board.getScore() + 1));
             joinFivePane.getChildren().remove(undoText);
         }
     }
 
     public void hint(ActionEvent event) {
+        LOGGER.info("Use of hint button.");
         hint = true;
         hintPoints.clear();
-        hintPoints = gameManager.getBoard().getPossibleMoves();
+        hintPoints = board.getPossibleMoves();
         for(Point point : hintPoints)
             setCircleOpacityFromPoint(point, 0.5);
     }
@@ -232,7 +245,7 @@ public class JoinFiveController {
         Parent root = loader.load();
 
         EndOfGameController endOfGameController = loader.getController();
-        endOfGameController.displayEndOfGame(gameManager);
+        endOfGameController.displayEndOfGame(board);
 
         Stage stage = (Stage) joinFivePane.getScene().getWindow();
         Scene scene = new Scene(root);
@@ -260,33 +273,33 @@ public class JoinFiveController {
         line.setEndY(endCircle.getCenterY());
         line.setStrokeWidth(2);
         line.setStroke(Color.BLUE);
-        line.setId("line"+gameManager.getBoard().getScore());
+        line.setId("line"+ board.getScore());
 
         joinFivePane.getChildren().add(line);
     }
 
-    public void initializeGame(Scene scene, GameManager gameManager) {
-        this.gameManager = gameManager;
+    public void initializeGame(Scene scene, Board board) {
+        this.board = board;
         this.scene = scene;
         playerScoreText.setText("0");
-        playerNameText.setText(gameManager.getPlayerName());
-        gameModeText.setText(gameManager.getBoard().getGameMode().getId());
-        gameManager.getBoard().initialize();
-        for (Point point : gameManager.getBoard().getPoints()) {
+        playerNameText.setText(board.getPlayerName());
+        gameModeText.setText(board.getGameMode().getId());
+        board.initialize();
+        for (Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
             circle.setOpacity(1);
         }
     }
 
     private void updateBoard() {
-        for(Point point : gameManager.getBoard().getPoints()) {
+        for(Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
             if(circle == null)
                 throw new NullPointerException();
             circle.setOpacity(1);
             addNumberOnPoint(circle, point.getScore());
         }
-        for(Alignment alignment : gameManager.getBoard().getAlignments()) {
+        for(Alignment alignment : board.getAlignments()) {
             drawLine(alignment);
         }
         updatePlayerScoreText();
@@ -304,6 +317,6 @@ public class JoinFiveController {
     }
 
     private void updatePlayerScoreText() {
-        playerScoreText.setText(String.valueOf(gameManager.getBoard().getScore()));
+        playerScoreText.setText(String.valueOf(board.getScore()));
     }
 }
