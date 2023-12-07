@@ -63,6 +63,19 @@ public class ChoosePlayerNameAndModeController {
         }
     }
 
+    public void displayRanking(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
+        Parent root = loader.load();
+
+        RankingController rankingController = loader.getController();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        rankingController.displayRanking();
+        stage.show();
+    }
+
     public void getMode(ActionEvent event) {
         if(mode5DRadioButton.isSelected())
             mode = Mode.DISJOINT;

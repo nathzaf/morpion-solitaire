@@ -1,6 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Board;
+import fr.nathzaf.projects.morpionsolitaire.ranking.GameHistory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +24,8 @@ public class EndOfGameController {
     private Text playerScoreText;
 
     public void displayEndOfGame(Board board) {
-        playerScoreText.setText("Your score is: " + board.getScore());
+        playerScoreText.setText("Your score is: " + board.getScore() + "\nIt has been registered on database.");
+        GameHistory.addNewGameHistory(board.getPlayerName(), board.getGameMode().getId(), board.getScore());
         LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
 
@@ -36,6 +38,19 @@ public class EndOfGameController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.show();
+    }
+
+    public void displayRanking(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
+        Parent root = loader.load();
+
+        RankingController rankingController = loader.getController();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        rankingController.displayRanking();
         stage.show();
     }
 
