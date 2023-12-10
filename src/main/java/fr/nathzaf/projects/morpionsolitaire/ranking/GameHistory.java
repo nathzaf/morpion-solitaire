@@ -17,14 +17,18 @@ public class GameHistory {
 
     private final String mode;
 
+    private final String autoSolver;
+
     private final int score;
 
-    public GameHistory(int id, String playerName, String mode, int score) {
+    public GameHistory(int id, String playerName, String mode, String autoSolver, int score) {
         this.id = id;
         this.playerName = playerName;
         this.mode = mode;
+        this.autoSolver = autoSolver;
         this.score = score;
     }
+
 
     public static List<GameHistory> getAllGameHistoryByMode(Mode mode) {
         List<GameHistory> gameHistoryList = new ArrayList<>();
@@ -37,7 +41,7 @@ public class GameHistory {
 
             while (resultSet.next()) {
                 gameHistoryList.add(new GameHistory(resultSet.getInt("id"), resultSet.getString("playerName"),
-                        resultSet.getString("mode"), resultSet.getInt("score")));
+                        resultSet.getString("mode"), resultSet.getString("autoSolver"), resultSet.getInt("score")));
             }
             connection.close();
         } catch (SQLException e) {
@@ -46,12 +50,12 @@ public class GameHistory {
         return gameHistoryList;
     }
 
-    public static void addNewGameHistory(String playerNameInput, String mode, int scoreInput) {
+    public static void addNewGameHistory(String playerNameInput, String mode, String autoSolver, int scoreInput) {
         try {
             Connection connection = DriverManager.getConnection(DB_URL);
             Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO GAME_HISTORY (playerName, mode, score)" +
-                    "VALUES ('" + playerNameInput + "', '" + mode + "', " + scoreInput + ")");
+            statement.executeUpdate("INSERT INTO GAME_HISTORY (playerName, mode, autoSolver, score)" +
+                    "VALUES ('" + playerNameInput + "', '" + mode + "', '" + autoSolver + "', " + scoreInput + ")");
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,12 +78,17 @@ public class GameHistory {
         return mode;
     }
 
+    public String getAutoSolver() {
+        return autoSolver;
+    }
+
     @Override
     public String toString() {
         return "GameHistory{" +
                 "id=" + id +
                 ", playerName='" + playerName + '\'' +
                 ", mode='" + mode + '\'' +
+                ", autoSolver='" + autoSolver + '\'' +
                 ", score=" + score +
                 '}';
     }

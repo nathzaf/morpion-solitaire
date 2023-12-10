@@ -63,6 +63,8 @@ public class JoinFiveController {
 
     private boolean multipleAlignments = false;
 
+    private boolean autoSolved = false;
+
     private Set<Point> multipleAlignmentsCandidates = new HashSet<>();
 
     private Set<Point> hintPoints = new HashSet<>();
@@ -169,6 +171,7 @@ public class JoinFiveController {
         surrenderButton.setText("Go to end screen");
         undoButton.setDisable(true);
         hintButton.setDisable(true);
+        autoSolved = true;
     }
 
     public void surrender(ActionEvent event) throws IOException {
@@ -245,7 +248,7 @@ public class JoinFiveController {
         Parent root = loader.load();
 
         EndOfGameController endOfGameController = loader.getController();
-        endOfGameController.displayEndOfGame(board);
+        endOfGameController.displayEndOfGame(board, autoSolved);
 
         Stage stage = (Stage) joinFivePane.getScene().getWindow();
         Scene scene = new Scene(root);

@@ -8,6 +8,6 @@
    <children>
       <Button layoutX="302.0" layoutY="651.0" mnemonicParsing="false" onAction="#returnToMainTitle" text="Return to main title" />
       <Button layoutX="605.0" layoutY="652.0" mnemonicParsing="false" onAction="#quit" text="Quit" />
-      <HBox fx:id="rankingHBox" alignment="CENTER" layoutX="251.0" layoutY="124.0" prefHeight="296.0" prefWidth="498.0" spacing="30.0" />
+      <HBox fx:id="rankingHBox" alignment="CENTER" layoutX="125.0" layoutY="124.0" prefHeight="296.0" prefWidth="741.0" spacing="40.0" />
    </children>
 </AnchorPane>

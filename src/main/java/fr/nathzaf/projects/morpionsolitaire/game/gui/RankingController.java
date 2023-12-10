@@ -43,7 +43,7 @@ public class RankingController {
                 gameHistory.sort(Comparator.comparing(GameHistory::getScore).reversed());
                 for (int i = 0; i < gameHistory.size(); i++) {
                     Text rankingLine = new Text("Number " + (i + 1) + " : " + gameHistory.get(i).getPlayerName() +
-                            " with a score of " + gameHistory.get(i).getScore());
+                            " with a score of " + gameHistory.get(i).getScore() + " " + gameHistory.get(i).getAutoSolver());
                     vbox.getChildren().add(rankingLine);
                 }
             } else {

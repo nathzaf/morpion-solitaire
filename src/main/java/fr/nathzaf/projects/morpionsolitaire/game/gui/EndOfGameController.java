@@ -23,9 +23,10 @@ public class EndOfGameController {
     @FXML
     private Text playerScoreText;
 
-    public void displayEndOfGame(Board board) {
-        playerScoreText.setText("Your score is: " + board.getScore() + "\nIt has been registered on database.");
-        GameHistory.addNewGameHistory(board.getPlayerName(), board.getGameMode().getId(), board.getScore());
+    public void displayEndOfGame(Board board, boolean autoSolved) {
+        String autoSolver = autoSolved ? "(auto solved randomly)" : "";
+        playerScoreText.setText("Your score is: " + board.getScore() + " " + autoSolver + "\nIt has been registered on database.");
+        GameHistory.addNewGameHistory(board.getPlayerName(), board.getGameMode().getId(), autoSolver, board.getScore());
         LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
 
