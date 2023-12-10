@@ -18,5 +18,6 @@
       </RadioButton>
       <RadioButton fx:id="mode5DRadioButton" layoutX="319.0" layoutY="182.0" mnemonicParsing="false" onAction="#getMode" text="5D" toggleGroup="$mode" />
       <Text layoutX="242.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your name here" />
+      <Button layoutX="269.0" layoutY="316.0" mnemonicParsing="false" onAction="#displayRanking" text="Ranking" />
    </children>
 </AnchorPane>
