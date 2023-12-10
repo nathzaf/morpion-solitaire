@@ -2,11 +2,15 @@ package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.Sets;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Board {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Board.class);
 
     private final Set<Point> points;
 
@@ -16,38 +20,39 @@ public class Board {
 
     private int score = 0;
 
-    private static final int INITIAL_SIZE = 4;
+    private final String playerName;
 
     private static final int REQUIRED = 5;
-
 
     /**
      * Constructs a new board with a given mode.
      *
      * @param mode the game mode for this board
+     * @param playerName the name of the player
      */
-    public Board(Mode mode) {
+    public Board(Mode mode, String playerName) {
         if (mode == null)
-            throw new NullPointerException("Mode can't be null.");
-        points = new HashSet<>();
-        alignments = new HashSet<>();
+            throw new NullPointerException("mode can't be null.");
+        if (playerName == null)
+            throw new NullPointerException("playerName can't be null.");
+        if (playerName.isBlank() || playerName.isEmpty())
+            throw new IllegalArgumentException("playerName can't be blank or empty.");
+        this.points = new HashSet<>();
+        this.alignments = new HashSet<>();
         this.gameMode = mode;
-        initializeBoard();
+        this.playerName = playerName;
+        LOGGER.info("Created a new {} board for {}.", mode.getId(), playerName);
     }
 
     /**
-     * Initializes the board with points.
+     * Initialize the board with the middle cross.
      */
-    private void initializeBoard() {
-        int x = 0;
-        int y = 0;
+    public void initialize() {
+        final int x = 6;
+        final int y = 3;
+        final int width = 4;
 
-        if (INITIAL_SIZE <= 3) {
-            throw new IllegalArgumentException("The width of the cross must be greater than 3.");
-        }
-
-        final int width = INITIAL_SIZE;
-        for (int i = 0; i < width; ++i) {
+        for (int i = 0; i < width; i++) {
             points.add(new Point(x + i, y));
             points.add(new Point(x + i - width + 1, y + width - 1));
             points.add(new Point(x + i + width - 1, y + width - 1));
@@ -61,21 +66,29 @@ public class Board {
             points.add(new Point(x, y + i + 2 * width - 2));
             points.add(new Point(x + width - 1, y + i + 2 * width - 2));
         }
+        LOGGER.info("Board initialized with a middle cross of with {}.", width);
     }
 
     /**
-     * Checks if the given point move is valid.
+     * Gets the possible moves
      *
-     * @param point the point to be checked
-     * @return true if the move is valid, false otherwise
+     * @return a set of points that can be played
      */
-    private boolean isValidMove(Point point) {
-        if (point == null)
-            throw new NullPointerException();
-        if (points.contains(point) || isAlignedPoint(point)) return false;
+    public Set<Point> getPossibleMoves() {
+        Set<Point> possibleMoves = new HashSet<>();
+        int searchRadius = 4;
 
-        Set<Alignment> detectedAlignments = detectAlignments(point);
-        return !detectedAlignments.isEmpty();
+        for (Point existingPoint : points) {
+            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
+                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
+                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
+                    if (!points.contains(potentialPoint) && isValidMove(potentialPoint)) {
+                        possibleMoves.add(potentialPoint);
+                    }
+                }
+            }
+        }
+        return possibleMoves;
     }
 
     /**
@@ -86,19 +99,70 @@ public class Board {
      */
     public Set<Alignment> addPoint(Point point) {
         if (point == null)
-            throw new NullPointerException("Adding a null point");
+            throw new NullPointerException("point can't be null");
         if (isValidMove(point)) {
-            points.add(point);
+            score++;
+            points.add(new Point(point, score));
+            LOGGER.info("{} added to the board.", point);
             return detectAlignments(point);
         }
         return new HashSet<>();
     }
 
+    /**
+     * Adds an alignment to the board.
+     *
+     * @param alignment the alignment to be added
+     */
     public void addAlignment(Alignment alignment) {
         if (alignment == null)
-            throw new NullPointerException("Adding a null alignment");
-        score++;
-        alignments.add(alignment);
+            throw new NullPointerException("alignment can't be null.");
+        alignments.add(new Alignment(alignment, score));
+        LOGGER.info("{} added to the board.", alignment);
+        LOGGER.info("Score is now {}.", score);
+    }
+
+    /**
+     * Undo the last point added, by deleting it, deleting the associated alignment and decrementing the score.
+     *
+     * @return the deleted point
+     */
+    public Point undo() {
+        Point undoPoint = null;
+        Alignment undoAlignmenet = null;
+        for(Point point : points) {
+            if(point.getScore() == score)
+                undoPoint = point;
+        }
+        for(Alignment alignment : alignments) {
+            if(alignment.getScore() == score)
+                undoAlignmenet = alignment;
+        }
+        if(undoPoint == null || undoAlignmenet == null)
+            throw new IllegalStateException("Can't undo.");
+        score--;
+        points.remove(undoPoint);
+        alignments.remove(undoAlignmenet);
+        LOGGER.info("Undoing the last move");
+        LOGGER.info("{} has been removed.", undoPoint);
+        LOGGER.info("{} has been removed.", undoAlignmenet);
+        LOGGER.info("Score is now {}.", score);
+        return undoPoint;
+    }
+
+    /**
+     * Checks if the given point move is valid.
+     *
+     * @param point the point to be checked
+     * @return true if the move is valid, false otherwise
+     */
+    private boolean isValidMove(Point point) {
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
+        if (points.contains(point) || isAlignedPoint(point)) return false;
+
+        Set<Alignment> detectedAlignments = detectAlignments(point);
+        return !detectedAlignments.isEmpty();
     }
 
     /**
@@ -109,7 +173,7 @@ public class Board {
      */
     private Set<Alignment> detectAlignments(Point point) {
         if (point == null)
-            throw new NullPointerException();
+            throw new NullPointerException("point can't be null.");
         Set<Alignment> possibleAlignments = new HashSet<>();
 
         for (Direction direction : Direction.values()) {
@@ -127,8 +191,10 @@ public class Board {
      * @return a set of Alignments that are valid
      */
     private Set<Alignment> hasAlignment(Point point, Direction direction) {
-        if (point == null || direction == null)
-            throw new NullPointerException();
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
+        if (direction == null)
+            throw new NullPointerException("direction can't be null.");
         Set<Alignment> possibleAlignments = new HashSet<>();
         Set<Point> alignedPoints = new HashSet<>();
         int dx = direction.getDx();
@@ -162,80 +228,15 @@ public class Board {
         return possibleAlignments;
     }
 
-
     /**
-     * Determines if the game is over.
+     * Check if a point is contained in an alignment.
      *
-     * @return true if the game is over, false otherwise
+     * @param point the point to check if it is aligned
+     * @return true if the point is aligned, false otherwise
      */
-    public boolean isGameOver() {
-        int searchRadius = 4;
-
-        for (Point existingPoint : points) {
-            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
-                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
-                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
-
-                    if (points.contains(potentialPoint)) {
-                        continue;
-                    }
-
-                    if (isValidMove(potentialPoint)) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Gets the possible moves
-     *
-     * @return a set of points that can be played
-     */
-    public Set<Point> getPossibleMoves() {
-        Set<Point> possibleMoves = new HashSet<>();
-        int searchRadius = 4;
-
-        for (Point existingPoint : points) {
-            for (int dx = -searchRadius; dx <= searchRadius; dx++) {
-                for (int dy = -searchRadius; dy <= searchRadius; dy++) {
-                    Point potentialPoint = new Point(existingPoint.getX() + dx, existingPoint.getY() + dy);
-                    if (!points.contains(potentialPoint) && isValidMove(potentialPoint)) {
-                        possibleMoves.add(potentialPoint);
-                    }
-                }
-            }
-        }
-
-        return possibleMoves;
-    }
-
-    /**
-     * Returns the current score of the board.
-     *
-     * @return the score
-     */
-    public int getScore() {
-        return score;
-    }
-
-    /**
-     * Resets the board to its initial state.
-     */
-    public void reset() {
-        points.clear();
-        alignments.clear();
-        initializeBoard();
-    }
-
-    public Set<Point> getPoints() {
-        return new HashSet<>(points);
-    }
-
     private boolean isAlignedPoint(Point point) {
+        if (point == null)
+            throw new NullPointerException("point can't be null.");
         for (Alignment alignment : alignments) {
             if (alignment.getPoints().contains(point))
                 return true;
@@ -243,42 +244,23 @@ public class Board {
         return false;
     }
 
-    @Override
-    public String toString() {
-        Set<Point> possibleMoves = getPossibleMoves();
-        Set<Point> allPoints = new HashSet<>(points);
-        for (Alignment alignment : alignments)
-            allPoints.addAll(alignment.getPoints());
-        allPoints.addAll(possibleMoves);
+    public int getScore() {
+        return score;
+    }
 
-        int minX = allPoints.stream().mapToInt(Point::getX).min().orElse(0) - 1;
-        int maxX = allPoints.stream().mapToInt(Point::getX).max().orElse(0) + 1;
-        int minY = allPoints.stream().mapToInt(Point::getY).min().orElse(0) - 1;
-        int maxY = allPoints.stream().mapToInt(Point::getY).max().orElse(0) + 1;
+    public Set<Point> getPoints() {
+        return points;
+    }
 
-        StringBuilder builder = new StringBuilder();
-        for (int i = maxY; i >= minY; i--) {
-            for (int j = minX; j <= maxX; j++) {
-                Point currentPoint = new Point(j, i);
-                if (isAlignedPoint(currentPoint)) {
-                    builder.append("O");
-                } else if (points.contains(currentPoint)) {
-                    builder.append("X");
-                } else if (possibleMoves.contains(currentPoint)) {
-                    builder.append("?");
-                } else {
-                    builder.append(".");
-                }
-                builder.append("  ");
-            }
-            builder.append("\n");
-        }
+    public Mode getGameMode() {
+        return gameMode;
+    }
 
-        builder.append("\nPossible moves:\n");
-        for (Point move : possibleMoves) {
-            builder.append("[").append(move.getX()).append(", ").append(move.getY()).append("]\n");
-        }
+    public Set<Alignment> getAlignments() {
+        return alignments;
+    }
 
-        return builder.toString();
+    public String getPlayerName(){
+        return playerName;
     }
 }

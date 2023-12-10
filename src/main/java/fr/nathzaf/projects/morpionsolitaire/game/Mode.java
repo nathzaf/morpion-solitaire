@@ -1,20 +1,20 @@
 package fr.nathzaf.projects.morpionsolitaire.game;
 
 public enum Mode {
-    TOUCHING('T', 2), // 5T
+    TOUCHING("5T", 2), // 5T
 
-    DISJOINT('D', 1); // 5D
+    DISJOINT("5D", 1); // 5D
 
-    private final char id;
+    private final String id;
 
     private final int maxCommonPoints;
 
-    Mode(char id, int maxCommonPoints) {
+    Mode(String id, int maxCommonPoints) {
         this.id = id;
         this.maxCommonPoints = maxCommonPoints;
     }
 
-    public char getId() {
+    public String getId() {
         return id;
     }
 
