@@ -4,6 +4,7 @@ import fr.nathzaf.projects.morpionsolitaire.components.Alignment;
 import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.components.Point;
 import fr.nathzaf.projects.morpionsolitaire.solver.RandomSolver;
+import fr.nathzaf.projects.morpionsolitaire.solver.Solver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -101,6 +102,7 @@ public class JoinFiveController {
                     Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
                     LOGGER.info("Multiple alignment possible for this point :");
+                    MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
                     for (Alignment alignment : possibleAlignments){
                         LOGGER.info("{}", alignment);
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
@@ -115,8 +117,9 @@ public class JoinFiveController {
                 }
                 addNumberOnPoint(circle, board.getScore());
                 updatePlayerScoreText();
-                if (board.getPossibleMoves().isEmpty())
+                if (board.getPossibleMoves().isEmpty()) {
                     endOfGame();
+                }
             }
         }
     }
@@ -165,9 +168,10 @@ public class JoinFiveController {
 
     public void randomSolver(ActionEvent event) {
         LOGGER.info("Using random solver.");
-        RandomSolver randomSolver = new RandomSolver(board);
+        Solver randomSolver = new RandomSolver(board);
         randomSolver.solve();
         updateBoard();
+        MusicPlayer.playSoundEffectFromGUIPackage("auto_solver_sound.mp3");
         surrenderButton.setText("Go to end screen");
         undoButton.setDisable(true);
         hintButton.setDisable(true);
@@ -184,6 +188,7 @@ public class JoinFiveController {
         Parent root = loader.load();
 
         ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
+        MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -213,6 +218,7 @@ public class JoinFiveController {
         hint = true;
         hintPoints.clear();
         hintPoints = board.getPossibleMoves();
+        MusicPlayer.playSoundEffectFromGUIPackage("hint_sound.mp3");
         for(Point point : hintPoints)
             setCircleOpacityFromPoint(point, 0.5);
     }
@@ -240,6 +246,8 @@ public class JoinFiveController {
             numberText.setStroke(Color.RED);
             numberText.setId("pointNumber" + number);
             joinFivePane.getChildren().add(numberText);
+            if((number == 1 || number % 5 == 0) && !autoSolved)
+                MusicPlayer.playSoundEffectFromGUIPackage("score_sound.mp3");
         }
     }
 
@@ -287,6 +295,7 @@ public class JoinFiveController {
         playerScoreText.setText("0");
         playerNameText.setText(board.getPlayerName());
         gameModeText.setText(board.getGameMode().getId());
+        MusicPlayer.playMusicFromGUIPackage("join_five_music.mp3");
         board.initialize();
         for (Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
