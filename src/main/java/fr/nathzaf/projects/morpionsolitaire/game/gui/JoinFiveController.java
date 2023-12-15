@@ -74,7 +74,6 @@ public class JoinFiveController {
             Circle circle = (Circle) event.getSource();
 
             Point selectedPoint = convertPointIdToPoint(circle.getId());
-
             if (hint) {
                 hint = false;
                 hintPoints.remove(selectedPoint);
@@ -168,6 +167,7 @@ public class JoinFiveController {
         RandomSolver randomSolver = new RandomSolver(board);
         randomSolver.solve();
         updateBoard();
+        LOGGER.info("Random solver done.");
         surrenderButton.setText("Go to end screen");
         undoButton.setDisable(true);
         hintButton.setDisable(true);
