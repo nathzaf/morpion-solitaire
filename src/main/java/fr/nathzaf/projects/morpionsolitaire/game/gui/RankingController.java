@@ -32,6 +32,12 @@ public class RankingController {
 
     public void displayRanking() {
         LOGGER.info("Displaying history");
+        VBox rankingNormalVBox = new VBox();
+        rankingNormalVBox.setSpacing(40);
+        VBox rankingSharpVBox = new VBox();
+        rankingSharpVBox.setSpacing(40);
+        rankingHBox.getChildren().add(rankingNormalVBox);
+        rankingHBox.getChildren().add(rankingSharpVBox);
         for(Mode mode : Mode.values()) {
             VBox vbox = new VBox(new Text(mode.getId()));
             vbox.setAlignment(Pos.CENTER);
@@ -49,7 +55,11 @@ public class RankingController {
             } else {
                 vbox.getChildren().add(new Text("No games to show."));
             }
-            rankingHBox.getChildren().add(vbox);
+            if(mode.isSharpMode()) {
+                rankingSharpVBox.getChildren().add(vbox);
+            } else {
+                rankingNormalVBox.getChildren().add(vbox);
+            }
         }
     }
 
