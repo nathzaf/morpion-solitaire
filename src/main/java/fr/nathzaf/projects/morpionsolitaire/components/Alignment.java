@@ -115,7 +115,6 @@ public class Alignment {
         return "Alignment{" +
                 "points=" + points +
                 ", direction=" + direction +
-                ", score=" + score +
                 '}';
     }
 }

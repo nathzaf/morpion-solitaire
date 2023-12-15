@@ -31,8 +31,14 @@ public class RankingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RankingController.class);
 
     public void displayRanking() {
-        LOGGER.info("Displaying history");
+        LOGGER.info("Displaying ranking");
         MusicPlayer.playMusicFromGUIPackage("ranking_music.mp3");
+        VBox rankingNormalVBox = new VBox();
+        rankingNormalVBox.setSpacing(40);
+        VBox rankingSharpVBox = new VBox();
+        rankingSharpVBox.setSpacing(40);
+        rankingHBox.getChildren().add(rankingNormalVBox);
+        rankingHBox.getChildren().add(rankingSharpVBox);
         for(Mode mode : Mode.values()) {
             VBox vbox = new VBox(new Text(mode.getId()));
             vbox.setAlignment(Pos.CENTER);
@@ -50,7 +56,11 @@ public class RankingController {
             } else {
                 vbox.getChildren().add(new Text("No games to show."));
             }
-            rankingHBox.getChildren().add(vbox);
+            if(mode.isSharpMode()) {
+                rankingSharpVBox.getChildren().add(vbox);
+            } else {
+                rankingNormalVBox.getChildren().add(vbox);
+            }
         }
     }
 
