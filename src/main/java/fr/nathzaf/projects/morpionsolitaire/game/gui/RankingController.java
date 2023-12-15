@@ -31,7 +31,7 @@ public class RankingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RankingController.class);
 
     public void displayRanking() {
-        LOGGER.info("Displaying history");
+        LOGGER.info("Displaying ranking");
         VBox rankingNormalVBox = new VBox();
         rankingNormalVBox.setSpacing(40);
         VBox rankingSharpVBox = new VBox();
