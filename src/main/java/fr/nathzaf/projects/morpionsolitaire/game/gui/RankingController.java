@@ -32,6 +32,7 @@ public class RankingController {
 
     public void displayRanking() {
         LOGGER.info("Displaying ranking");
+        MusicPlayer.playMusicFromGUIPackage("ranking_music.mp3");
         VBox rankingNormalVBox = new VBox();
         rankingNormalVBox.setSpacing(40);
         VBox rankingSharpVBox = new VBox();
@@ -68,6 +69,7 @@ public class RankingController {
         Parent root = loader.load();
 
         ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
+        MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
