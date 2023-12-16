@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -30,9 +31,11 @@ public class RankingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RankingController.class);
 
+    private MediaPlayer mediaPlayer;
+
     public void displayRanking() {
         LOGGER.info("Displaying ranking");
-        MusicPlayer.playMusicFromGUIPackage("ranking_music.mp3");
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("ranking_music.mp3");
         VBox rankingNormalVBox = new VBox();
         rankingNormalVBox.setSpacing(40);
         VBox rankingSharpVBox = new VBox();
@@ -65,11 +68,11 @@ public class RankingController {
     }
 
     public void returnToMainTitle(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ChoosePlayerNameAndMode.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainTitle.fxml"));
         Parent root = loader.load();
 
-        ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
-        MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+        MainTitleController mainTitleController = loader.getController();
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);

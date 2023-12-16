@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ChoosePlayerNameAndModeController {
+public class MainTitleController {
 
     @FXML
     private TextField playerNameTextField;

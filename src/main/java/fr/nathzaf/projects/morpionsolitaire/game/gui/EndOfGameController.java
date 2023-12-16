@@ -33,10 +33,10 @@ public class EndOfGameController {
     }
 
     public void newGame(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ChoosePlayerNameAndMode.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainTitle.fxml"));
         Parent root = loader.load();
 
-        ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
+        MainTitleController mainTitleController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);

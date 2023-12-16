@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -69,6 +70,8 @@ public class JoinFiveController {
     private Set<Point> multipleAlignmentsCandidates = new HashSet<>();
 
     private Set<Point> hintPoints = new HashSet<>();
+
+    private MediaPlayer mediaPlayer;
 
     public void selectPoint(MouseEvent event) throws IOException {
         if(!multipleAlignments) {
@@ -184,11 +187,11 @@ public class JoinFiveController {
     }
 
     public void returnToMainTitle(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ChoosePlayerNameAndMode.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainTitle.fxml"));
         Parent root = loader.load();
 
-        ChoosePlayerNameAndModeController choosePlayerNameAndModeController = loader.getController();
-        MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+        MainTitleController mainTitleController = loader.getController();
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -295,7 +298,7 @@ public class JoinFiveController {
         playerScoreText.setText("0");
         playerNameText.setText(board.getPlayerName());
         gameModeText.setText(board.getGameMode().getId());
-        MusicPlayer.playMusicFromGUIPackage("join_five_music.mp3");
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("join_five_music.mp3");
         board.initialize();
         for (Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
