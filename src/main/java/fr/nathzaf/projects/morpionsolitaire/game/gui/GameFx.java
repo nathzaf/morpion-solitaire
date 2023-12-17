@@ -18,7 +18,7 @@ public class GameFx extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Font.loadFont(getClass().getResourceAsStream("zelda_font.otf"), 25);
+        Font.loadFont(getClass().getResourceAsStream("zelda_font.otf"), 0);
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainTitle.fxml")));
         Image gameIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("logo.png")));
         if(Taskbar.isTaskbarSupported()) {
