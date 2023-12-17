@@ -22,12 +22,10 @@ public class Board {
 
     private final String playerName;
 
-    private static final int REQUIRED = 5;
-
     /**
      * Constructs a new board with a given mode.
      *
-     * @param mode the game mode for this board
+     * @param mode       the game mode for this board
      * @param playerName the name of the player
      */
     public Board(Mode mode, String playerName) {
@@ -52,21 +50,60 @@ public class Board {
         final int y = 3;
         final int width = 4;
 
-        for (int i = 0; i < width; i++) {
-            points.add(new Point(x + i, y));
-            points.add(new Point(x + i - width + 1, y + width - 1));
-            points.add(new Point(x + i + width - 1, y + width - 1));
-            points.add(new Point(x + i - width + 1, y + 2 * width - 2));
-            points.add(new Point(x + i + width - 1, y + 2 * width - 2));
-            points.add(new Point(x + i, y + 3 * width - 3));
-            points.add(new Point(x, y + i));
-            points.add(new Point(x + width - 1, y + i));
-            points.add(new Point(x - width + 1, y + i + width - 1));
-            points.add(new Point(x + 2 * width - 2, y + i + width - 1));
-            points.add(new Point(x, y + i + 2 * width - 2));
-            points.add(new Point(x + width - 1, y + i + 2 * width - 2));
+        if (!gameMode.isSharpMode()) {
+            for (int i = 0; i < width; i++) {
+                points.add(new Point(x + i, y));
+                points.add(new Point(x + i - width + 1, y + width - 1));
+                points.add(new Point(x + i + width - 1, y + width - 1));
+                points.add(new Point(x + i - width + 1, y + 2 * width - 2));
+                points.add(new Point(x + i + width - 1, y + 2 * width - 2));
+                points.add(new Point(x + i, y + 3 * width - 3));
+                points.add(new Point(x, y + i));
+                points.add(new Point(x + width - 1, y + i));
+                points.add(new Point(x - width + 1, y + i + width - 1));
+                points.add(new Point(x + 2 * width - 2, y + i + width - 1));
+                points.add(new Point(x, y + i + 2 * width - 2));
+                points.add(new Point(x + width - 1, y + i + 2 * width - 2));
+            }
+        } else {
+            points.add(new Point(0, 8));
+            points.add(new Point(1, 8));
+            points.add(new Point(2, 8));
+            points.add(new Point(3, 8));
+
+            points.add(new Point(5, 8));
+            points.add(new Point(6, 8));
+            points.add(new Point(7, 8));
+
+            points.add(new Point(9, 8));
+            points.add(new Point(10, 8));
+            points.add(new Point(11, 8));
+
+            points.add(new Point(13, 8));
+            points.add(new Point(14, 8));
+            points.add(new Point(15, 8));
+
+            points.add(new Point(1, 9));
+            points.add(new Point(1, 7));
+
+            points.add(new Point(2, 10));
+            points.add(new Point(2, 9));
+            points.add(new Point(2, 7));
+            points.add(new Point(2, 6));
+
+            points.add(new Point(3, 11));
+            points.add(new Point(3, 10));
+            points.add(new Point(3, 9));
+            points.add(new Point(3, 7));
+            points.add(new Point(3, 6));
+            points.add(new Point(3, 5));
+
+            points.add(new Point(4, 11));
+            points.add(new Point(4, 10));
+            points.add(new Point(4, 6));
+            points.add(new Point(4, 5));
         }
-        LOGGER.info("Board initialized with a middle cross of with {}.", width);
+        LOGGER.info("Board initialized.");
     }
 
     /**
@@ -130,15 +167,15 @@ public class Board {
     public Point undo() {
         Point undoPoint = null;
         Alignment undoAlignmenet = null;
-        for(Point point : points) {
-            if(point.getScore() == score)
+        for (Point point : points) {
+            if (point.getScore() == score)
                 undoPoint = point;
         }
-        for(Alignment alignment : alignments) {
-            if(alignment.getScore() == score)
+        for (Alignment alignment : alignments) {
+            if (alignment.getScore() == score)
                 undoAlignmenet = alignment;
         }
-        if(undoPoint == null || undoAlignmenet == null)
+        if (undoPoint == null || undoAlignmenet == null)
             throw new IllegalStateException("Can't undo.");
         score--;
         points.remove(undoPoint);
@@ -152,6 +189,7 @@ public class Board {
 
     /**
      * Checks if the given point move is valid.
+     * A point that is not in the board of 16x16 is considered as invalid
      *
      * @param point the point to be checked
      * @return true if the move is valid, false otherwise
@@ -160,7 +198,7 @@ public class Board {
         if (point == null)
             throw new NullPointerException("point can't be null.");
         if (points.contains(point) || isAlignedPoint(point)) return false;
-
+        if (point.getX() < 0 || point.getY() < 0 || point.getX() > 15 || point.getY() > 15) return false;
         Set<Alignment> detectedAlignments = detectAlignments(point);
         return !detectedAlignments.isEmpty();
     }
@@ -205,7 +243,7 @@ public class Board {
                 if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                     alignedPoints.add(alignedPoint);
                 }
-                if (alignedPoints.size() == REQUIRED) {
+                if (alignedPoints.size() == Alignment.ALIGNMENT_SIZE) {
                     Alignment possibleAlignment = new Alignment(alignedPoints, direction);
                     if (!alignments.contains(possibleAlignment)) {
                         boolean valid = true;
@@ -260,7 +298,7 @@ public class Board {
         return alignments;
     }
 
-    public String getPlayerName(){
+    public String getPlayerName() {
         return playerName;
     }
 }
