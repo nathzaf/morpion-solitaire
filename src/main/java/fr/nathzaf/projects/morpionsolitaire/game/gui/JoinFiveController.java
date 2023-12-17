@@ -198,7 +198,7 @@ public class JoinFiveController {
         MainTitleController mainTitleController = loader.getController();
         if(mediaPlayer != null)
             mediaPlayer.stop();
-        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+        mainTitleController.init();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
