@@ -27,7 +27,7 @@ public class EndOfGameController {
         MusicPlayer.stopMusic();
         MusicPlayer.playSoundEffectFromGUIPackage("game_over_sound.mp3");
         String autoSolver = autoSolved ? "(auto solved randomly)" : "";
-        playerScoreText.setText("Your score is: " + board.getScore() + " " + autoSolver + "\nIt has been registered on database.");
+        playerScoreText.setText("Your score is: " + board.getScore() + "\nIt has been registered on database");
         GameHistory.addNewGameHistory(board.getPlayerName(), board.getGameMode().getId(), autoSolver, board.getScore());
         LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
@@ -46,15 +46,15 @@ public class EndOfGameController {
     }
 
     public void displayRanking(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Scoreboard.fxml"));
         Parent root = loader.load();
 
-        RankingController rankingController = loader.getController();
+        ScoreboardController scoreboardController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        rankingController.displayRanking();
+        scoreboardController.displayRanking();
         stage.show();
     }
 

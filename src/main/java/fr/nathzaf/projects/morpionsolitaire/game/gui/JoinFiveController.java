@@ -19,6 +19,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -97,6 +98,8 @@ public class JoinFiveController {
                     circle.setOpacity(1);
                     drawLine(possibleAlignments.get(0));
                 } else if (possibleAlignments.size() > 1) {
+                    if(!autoSolved)
+                        MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
                     hintButton.setDisable(true);
                     randomSolverButton.setDisable(true);
                     undoButton.setDisable(true);
@@ -104,8 +107,6 @@ public class JoinFiveController {
                     Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
                     LOGGER.info("Multiple alignment possible for this point :");
-                    if(!autoSolved)
-                        MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
                     for (Alignment alignment : possibleAlignments){
                         LOGGER.info("{}", alignment);
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
@@ -136,7 +137,7 @@ public class JoinFiveController {
             randomSolverButton.setDisable(false);
             undoButton.setDisable(false);
             board.addAlignment(alignment);
-            circle.setFill(Color.BLACK);
+            circle.setFill(Color.web("#f81010"));
             drawLine(alignment);
             multipleAlignmentsCandidates.remove(point);
             multipleAlignments = false;
@@ -145,7 +146,7 @@ public class JoinFiveController {
                     setCircleOpacityFromPoint(candidate, 1);
                 else
                     setCircleOpacityFromPoint(candidate, 0);
-                setCircleColorFromPoint(candidate, Color.BLACK);
+                setCircleColorFromPoint(candidate, Color.web("#f81010"));
             }
             multipleAlignmentsCandidates.clear();
         });
@@ -180,7 +181,7 @@ public class JoinFiveController {
         updateBoard();
         MusicPlayer.playSoundEffectFromGUIPackage("auto_solver_sound.mp3");
         LOGGER.info("Random solver done.");
-        surrenderButton.setText("Go to end screen");
+        surrenderButton.setText("End screen");
         undoButton.setDisable(true);
         hintButton.setDisable(true);
     }
@@ -217,17 +218,17 @@ public class JoinFiveController {
             updatePlayerScoreText();
             Line undoLine = (Line) scene.lookup("#line" + (board.getScore() + 1));
             joinFivePane.getChildren().remove(undoLine);
-            Text undoText = (Text) scene.lookup("#pointNumber" + (board.getScore() + 1));
-            joinFivePane.getChildren().remove(undoText);
+            Text undoPointScoreText = (Text) scene.lookup("#pointNumber" + (board.getScore() + 1));
+            joinFivePane.getChildren().remove(undoPointScoreText);
         }
     }
 
     public void hint(ActionEvent event) {
+        MusicPlayer.playSoundEffectFromGUIPackage("hint_sound.mp3");
         LOGGER.info("Use of hint button.");
         hint = true;
         hintPoints.clear();
         hintPoints = board.getPossibleMoves();
-        MusicPlayer.playSoundEffectFromGUIPackage("hint_sound.mp3");
         for(Point point : hintPoints)
             setCircleOpacityFromPoint(point, 0.5);
     }
@@ -248,15 +249,18 @@ public class JoinFiveController {
 
     private void addNumberOnPoint(Circle circle, int number) {
         if(number != -1) { //case of initialized points
-            Text numberText = new Text(String.valueOf(number));
-            int dx = number < 10 ? 10 : 15;
-            numberText.setX(circle.getCenterX() - dx);
-            numberText.setY(circle.getCenterY() + 15);
-            numberText.setStroke(Color.RED);
-            numberText.setId("pointNumber" + number);
-            joinFivePane.getChildren().add(numberText);
             if((number == 1 || number % 5 == 0) && !autoSolved)
                 MusicPlayer.playSoundEffectFromGUIPackage("score_sound.mp3");
+            Text numberText = new Text(String.valueOf(number));
+            int dx = number < 10 ? 10 : 15;
+            Font font = new Font("The Wild Breath of Zelda", 12);
+            numberText.setFont(font);
+            numberText.setX(circle.getCenterX() - dx);
+            numberText.setY(circle.getCenterY() + 15);
+            numberText.setStroke(Color.YELLOW);
+            numberText.setFill(Color.YELLOW);
+            numberText.setId("pointNumber" + number);
+            joinFivePane.getChildren().add(numberText);
         }
     }
 
@@ -294,7 +298,7 @@ public class JoinFiveController {
         line.setEndX(endCircle.getCenterX());
         line.setEndY(endCircle.getCenterY());
         line.setStrokeWidth(2);
-        line.setStroke(Color.BLUE);
+        line.setStroke(Color.YELLOW);
         line.setId("line"+ board.getScore());
 
         joinFivePane.getChildren().add(line);
