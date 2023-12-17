@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class GameFx extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Font.loadFont(getClass().getResourceAsStream("zelda_font.otf"), 25);
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainTitle.fxml")));
         if(mediaPlayer != null)
             mediaPlayer.stop();
