@@ -1,9 +1,7 @@
 package fr.nathzaf.projects.morpionsolitaire.components;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,7 +19,7 @@ public class Alignment {
     /**
      * Constructor for 'default' alignment, especially for playable alignment test.
      *
-     * @param points the set of points of the alignment
+     * @param points    the set of points of the alignment
      * @param direction the direction of the alignment
      */
     public Alignment(Set<Point> points, Direction direction) {
@@ -38,7 +36,7 @@ public class Alignment {
      * Constructor for 'played' alignment.
      *
      * @param alignment the alignment to be copied
-     * @param score the associated score
+     * @param score     the associated score
      */
     public Alignment(Alignment alignment, int score) {
         if (alignment == null)
@@ -57,8 +55,8 @@ public class Alignment {
         Point minPoint = null;
         Point maxPoint = null;
 
-        for(Point point : points) {
-            if(minPoint == null && maxPoint == null) {
+        for (Point point : points) {
+            if (minPoint == null && maxPoint == null) {
                 minPoint = point;
                 maxPoint = point;
                 continue;
@@ -81,7 +79,7 @@ public class Alignment {
             }
         }
 
-        if(minPoint == null || maxPoint == null || minPoint.equals(maxPoint))
+        if (minPoint == null || maxPoint == null || minPoint.equals(maxPoint))
             throw new IllegalStateException("Two different extremities must have been found.");
 
         return List.of(minPoint, maxPoint);
@@ -113,7 +111,7 @@ public class Alignment {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Alignment{" +
                 "points=" + points +
                 ", direction=" + direction +

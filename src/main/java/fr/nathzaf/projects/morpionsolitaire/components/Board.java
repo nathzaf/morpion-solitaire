@@ -25,7 +25,7 @@ public class Board {
     /**
      * Constructs a new board with a given mode.
      *
-     * @param mode the game mode for this board
+     * @param mode       the game mode for this board
      * @param playerName the name of the player
      */
     public Board(Mode mode, String playerName) {
@@ -50,8 +50,8 @@ public class Board {
         final int y = 3;
         final int width = 4;
 
-        if(!gameMode.isSharpMode()){
-            for(int i = 0; i < width; i++){
+        if (!gameMode.isSharpMode()) {
+            for (int i = 0; i < width; i++) {
                 points.add(new Point(x + i, y));
                 points.add(new Point(x + i - width + 1, y + width - 1));
                 points.add(new Point(x + i + width - 1, y + width - 1));
@@ -167,15 +167,15 @@ public class Board {
     public Point undo() {
         Point undoPoint = null;
         Alignment undoAlignmenet = null;
-        for(Point point : points) {
-            if(point.getScore() == score)
+        for (Point point : points) {
+            if (point.getScore() == score)
                 undoPoint = point;
         }
-        for(Alignment alignment : alignments) {
-            if(alignment.getScore() == score)
+        for (Alignment alignment : alignments) {
+            if (alignment.getScore() == score)
                 undoAlignmenet = alignment;
         }
-        if(undoPoint == null || undoAlignmenet == null)
+        if (undoPoint == null || undoAlignmenet == null)
             throw new IllegalStateException("Can't undo.");
         score--;
         points.remove(undoPoint);
@@ -298,7 +298,7 @@ public class Board {
         return alignments;
     }
 
-    public String getPlayerName(){
+    public String getPlayerName() {
         return playerName;
     }
 }

@@ -27,15 +27,15 @@ public class GameFx extends Application {
         Font.loadFont(getClass().getResourceAsStream("zelda_font.otf"), 0);
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainTitle.fxml")));
         Image gameIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("logo.png")));
-        if(Taskbar.isTaskbarSupported()) {
+        if (Taskbar.isTaskbarSupported()) {
             Taskbar taskbar = Taskbar.getTaskbar();
-            if(taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+            if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
                 Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
                 java.awt.Image toolkitImage = defaultToolkit.getImage(getClass().getResource("logo.png"));
                 taskbar.setIconImage(toolkitImage);
             }
         }
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
         stage.getIcons().add(gameIcon);

@@ -20,7 +20,7 @@ public class MusicPlayer {
      *
      * @param fileName the name of the sound effect file
      */
-    public static void playSoundEffectFromGUIPackage(String fileName){
+    public static void playSoundEffectFromGUIPackage(String fileName) {
         URL soundEffectFile = MusicPlayer.class.getResource(fileName);
         MusicPlayer musicPlayer = MusicPlayer.getInstance();
         musicPlayer.playSoundEffect(soundEffectFile.toString());
@@ -31,7 +31,7 @@ public class MusicPlayer {
      *
      * @param fileName the name of the music file
      */
-    public static MediaPlayer playMusicFromGUIPackage(String fileName){
+    public static MediaPlayer playMusicFromGUIPackage(String fileName) {
         URL musicFile = MusicPlayer.class.getResource(fileName);
         MusicPlayer musicPlayer = MusicPlayer.getInstance();
         musicPlayer.setMusic(musicFile.toString());
@@ -46,8 +46,8 @@ public class MusicPlayer {
         musicPlayer.mediaPlayer.stop();
     }
 
-    public static MusicPlayer getInstance(){
-        if(instance == null){
+    public static MusicPlayer getInstance() {
+        if(instance == null) {
             instance = new MusicPlayer();
         }
         return instance;
@@ -59,8 +59,8 @@ public class MusicPlayer {
      *
      * @param musicFilePath the file path of the music file
      */
-    private void setMusic(String musicFilePath){
-        if(mediaPlayer != null){
+    private void setMusic(String musicFilePath) {
+        if(mediaPlayer != null) {
             mediaPlayer.stop();
         }
         Media musicMedia = new Media(musicFilePath);
@@ -71,8 +71,8 @@ public class MusicPlayer {
      * Plays the background music.
      * If there is no background music set, this method has no effect.
      */
-    private MediaPlayer playMusic(){
-        if(mediaPlayer != null){
+    private MediaPlayer playMusic() {
+        if(mediaPlayer != null) {
             mediaPlayer.setVolume(1);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.play();
@@ -85,7 +85,7 @@ public class MusicPlayer {
      *
      * @param soundEffectPath the file path of the sound effect
      */
-    private void playSoundEffect(String soundEffectPath){
+    private void playSoundEffect(String soundEffectPath) {
         Media soundEffectMedia = new Media(soundEffectPath);
         mediaPlayer = new MediaPlayer(soundEffectMedia);
         mediaPlayer.play();
