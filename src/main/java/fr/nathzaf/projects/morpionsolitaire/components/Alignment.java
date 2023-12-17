@@ -16,6 +16,8 @@ public class Alignment {
 
     private final int score;
 
+    public static final int ALIGNMENT_SIZE = 5;
+
     /**
      * Constructor for 'default' alignment, especially for playable alignment test.
      *
@@ -23,7 +25,7 @@ public class Alignment {
      * @param direction the direction of the alignment
      */
     public Alignment(Set<Point> points, Direction direction) {
-        if (points.size() != 5)
+        if (points.size() != ALIGNMENT_SIZE)
             throw new IllegalArgumentException("An alignment must be composed of 5 points.");
         if (direction == null)
             throw new NullPointerException("direction can't be null.");

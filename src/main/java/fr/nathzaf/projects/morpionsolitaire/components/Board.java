@@ -22,8 +22,6 @@ public class Board {
 
     private final String playerName;
 
-    private static final int REQUIRED = 5;
-
     /**
      * Constructs a new board with a given mode.
      *
@@ -245,7 +243,7 @@ public class Board {
                 if (points.contains(alignedPoint) || alignedPoint.equals(point)) {
                     alignedPoints.add(alignedPoint);
                 }
-                if (alignedPoints.size() == REQUIRED) {
+                if (alignedPoints.size() == Alignment.ALIGNMENT_SIZE) {
                     Alignment possibleAlignment = new Alignment(alignedPoints, direction);
                     if (!alignments.contains(possibleAlignment)) {
                         boolean valid = true;
