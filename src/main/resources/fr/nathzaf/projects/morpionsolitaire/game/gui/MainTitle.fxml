@@ -18,9 +18,9 @@
             <Image url="@backgound.jpg" />
          </image>
       </ImageView>
-      <TextField fx:id="playerNameTextField" alignment="CENTER" layoutX="216.0" layoutY="112.0">
+      <TextField fx:id="playerNameTextField" alignment="CENTER" layoutX="205.0" layoutY="112.0">
          <font>
-            <Font name="The Wild Breath of Zelda" size="16.0" />
+            <Font name="The Wild Breath of Zelda" size="18.0" />
          </font></TextField>
       <RadioButton fx:id="mode5TRadioButton" layoutX="245.0" layoutY="172.0" mnemonicParsing="false" onAction="#getMode" text="5T" textFill="WHITE">
          <toggleGroup>
