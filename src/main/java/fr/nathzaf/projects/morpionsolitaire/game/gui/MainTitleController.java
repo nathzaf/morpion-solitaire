@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,6 +32,12 @@ public class MainTitleController {
     private CheckBox sharpModeCheckBox;
 
     private Mode mode = null;
+
+    private MediaPlayer mediaPlayer;
+
+    public void init() {
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+    }
 
     public void startGame(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -64,6 +71,9 @@ public class MainTitleController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
             Parent root = loader.load();
 
+            if(mediaPlayer != null)
+                mediaPlayer.stop();
+
             JoinFiveController joinFiveController = loader.getController();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -77,6 +87,10 @@ public class MainTitleController {
     public void displayRanking(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
         Parent root = loader.load();
+
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
 
         RankingController rankingController = loader.getController();
 

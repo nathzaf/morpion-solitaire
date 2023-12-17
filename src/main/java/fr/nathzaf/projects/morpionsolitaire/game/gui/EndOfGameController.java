@@ -37,6 +37,7 @@ public class EndOfGameController {
         Parent root = loader.load();
 
         MainTitleController mainTitleController = loader.getController();
+        mainTitleController.init();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
