@@ -16,6 +16,12 @@ public class GameFx extends Application {
 
     private MediaPlayer mediaPlayer;
 
+    /**
+     * The entry point of the GUI.
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         Font.loadFont(getClass().getResourceAsStream("zelda_font.otf"), 0);

@@ -74,6 +74,13 @@ public class JoinFiveController {
 
     private MediaPlayer mediaPlayer;
 
+    /**
+     * Handle the selection of a point, play it if it is a playable one,
+     * show choices if it can be played for multiples alignments.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void selectPoint(MouseEvent event) throws IOException {
         if (!multipleAlignments) {
             Circle circle = (Circle) event.getSource();
@@ -128,6 +135,12 @@ public class JoinFiveController {
         }
     }
 
+    /**
+     * Called when a point can be played for several alignments, it gives to the user the choice of which alignment he wants to play.
+     *
+     * @param point
+     * @param alignment
+     */
     private void setCircleCreatingAlignmentFormPoint(Point point, Alignment alignment) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
         if (circle == null)
@@ -152,6 +165,12 @@ public class JoinFiveController {
         });
     }
 
+    /**
+     * Handle clicking of "Reset" button, resets the board.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void reset(ActionEvent event) throws IOException {
         Board board = new Board(this.board.getGameMode(),
                 this.board.getPlayerName());
@@ -173,6 +192,11 @@ public class JoinFiveController {
         stage.show();
     }
 
+    /**
+     * Handle clicking of "Random Solver" button, solve the game with the RandomSolver.
+     *
+     * @param event
+     */
     public void randomSolver(ActionEvent event) {
         LOGGER.info("Using random solver.");
         autoSolved = true;
@@ -186,6 +210,12 @@ public class JoinFiveController {
         hintButton.setDisable(true);
     }
 
+    /**
+     * Handle clicking of "Surrender" button, surrends the game and send the user to the end of game screen.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void surrender(ActionEvent event) throws IOException {
         LOGGER.info("Surrending the game.");
         endOfGame();
@@ -206,11 +236,21 @@ public class JoinFiveController {
         stage.show();
     }
 
+    /**
+     * Handle clicking "Quit" button, close the window.
+     *
+     * @param event
+     */
     public void quit(ActionEvent event) {
         LOGGER.info("Quitting the game.");
         Platform.exit();
     }
 
+    /**
+     * Handle clicking "Undo" button, undo the last point played.
+     *
+     * @param event
+     */
     public void undo(ActionEvent event) {
         if (board.getScore() > 0) {
             Point undoPoint = board.undo();
@@ -223,6 +263,11 @@ public class JoinFiveController {
         }
     }
 
+    /**
+     * Handle clicking "Hint" button, show all playable points.
+     *
+     * @param event
+     */
     public void hint(ActionEvent event) {
         MusicPlayer.playSoundEffectFromGUIPackage("hint_sound.mp3");
         LOGGER.info("Use of hint button.");
@@ -233,6 +278,12 @@ public class JoinFiveController {
             setCircleOpacityFromPoint(point, 0.5);
     }
 
+    /**
+     * Change the opacity of the circle associated to a Point.
+     *
+     * @param point the point associated to the circle
+     * @param opacity the new opacity wanted
+     */
     private void setCircleOpacityFromPoint(Point point, double opacity) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
         if (circle == null)
@@ -240,6 +291,12 @@ public class JoinFiveController {
         circle.setOpacity(opacity);
     }
 
+    /**
+     * Change the color of the circle associated to a Point.
+     *
+     * @param point the point associated to the circle
+     * @param color the new color.
+     */
     private void setCircleColorFromPoint(Point point, Color color) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
         if (circle == null)
@@ -247,6 +304,12 @@ public class JoinFiveController {
         circle.setFill(color);
     }
 
+    /**
+     * Add a number under a point, used when a point is played to show the score associated.
+     *
+     * @param circle the circle played
+     * @param number the number to be added under the point
+     */
     private void addNumberOnPoint(Circle circle, int number) {
         if (number != -1) { //case of initialized points
             if ((number == 1 || number % 5 == 0) && !autoSolved)
@@ -264,6 +327,11 @@ public class JoinFiveController {
         }
     }
 
+    /**
+     * End the game by opening the end of game screen.
+     *
+     * @throws IOException
+     */
     private void endOfGame() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EndOfGame.fxml"));
         Parent root = loader.load();
@@ -279,6 +347,11 @@ public class JoinFiveController {
         stage.show();
     }
 
+    /**
+     * Draw a line associated to an alignment.
+     *
+     * @param alignment the alignment to be draw
+     */
     private void drawLine(Alignment alignment) {
         List<Point> extremities = alignment.getExtremities();
         Line line = new Line();
@@ -304,6 +377,12 @@ public class JoinFiveController {
         joinFivePane.getChildren().add(line);
     }
 
+    /**
+     * Initialize the game by activating all points of the starting pattern.
+     *
+     * @param scene the scene of the game
+     * @param board the baord of the game
+     */
     public void initializeGame(Scene scene, Board board) {
         this.board = board;
         this.scene = scene;
@@ -320,6 +399,9 @@ public class JoinFiveController {
         }
     }
 
+    /**
+     * Update the board using all points played in Board. Used after a solver.
+     */
     private void updateBoard() {
         for (Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
@@ -334,6 +416,13 @@ public class JoinFiveController {
         updatePlayerScoreText();
     }
 
+    /**
+     * Convert an id to the associated Point.
+     * The id "x5y10" gives a Point(x=5, y=10).
+     *
+     * @param id the id of the wanted point
+     * @return a Point associated to the id given
+     */
     private Point convertPointIdToPoint(String id) {
         Pattern pattern = Pattern.compile("x(\\d{1,2})y(\\d{1,2})");
         Matcher matcher = pattern.matcher(id);
@@ -345,6 +434,9 @@ public class JoinFiveController {
         throw new IllegalArgumentException("Can't convert the given id.");
     }
 
+    /**
+     * Update the player's score text.
+     */
     private void updatePlayerScoreText() {
         playerScoreText.setText(String.valueOf(board.getScore()));
     }

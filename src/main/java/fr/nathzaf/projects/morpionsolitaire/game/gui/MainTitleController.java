@@ -36,10 +36,20 @@ public class MainTitleController {
 
     private MediaPlayer mediaPlayer;
 
+    /**
+     * Init the main title screen by starting the associated music.
+     */
     public void init() {
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
     }
 
+    /**
+     * Handle clicking "Launch game!" button. Starts the game with the specified player name and mode.
+     * Open an alert if an information is missing.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void startGame(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("An error has occured");
@@ -84,6 +94,12 @@ public class MainTitleController {
         }
     }
 
+    /**
+     * Handle clicking "Ranking" button, send the user to the scoreboard screen.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void displayRanking(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Scoreboard.fxml"));
         Parent root = loader.load();
@@ -100,6 +116,11 @@ public class MainTitleController {
         stage.show();
     }
 
+    /**
+     * Get the mode selected in radio buttons.
+     *
+     * @param event
+     */
     public void getMode(ActionEvent event) {
         if (mode5DRadioButton.isSelected())
             mode = Mode.DISJOINT;
@@ -107,6 +128,11 @@ public class MainTitleController {
             mode = Mode.TOUCHING;
     }
 
+    /**
+     * Handle clicking "Quit" button, close the window.
+     *
+     * @param event
+     */
     public void quit(ActionEvent event) {
         Platform.exit();
     }
