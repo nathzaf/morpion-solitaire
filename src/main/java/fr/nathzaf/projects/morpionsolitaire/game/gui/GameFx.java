@@ -16,6 +16,8 @@ public class GameFx extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainTitle.fxml")));
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
         stage.setTitle("Morpion Solitaire");
         stage.setScene(new Scene(root));

@@ -104,7 +104,8 @@ public class JoinFiveController {
                     Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
                     LOGGER.info("Multiple alignment possible for this point :");
-                    MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
+                    if(!autoSolved)
+                        MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
                     for (Alignment alignment : possibleAlignments){
                         LOGGER.info("{}", alignment);
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
@@ -170,6 +171,7 @@ public class JoinFiveController {
 
     public void randomSolver(ActionEvent event) {
         LOGGER.info("Using random solver.");
+        autoSolved = true;
         Solver randomSolver = new RandomSolver(board);
         randomSolver.solve();
         updateBoard();
@@ -178,7 +180,6 @@ public class JoinFiveController {
         surrenderButton.setText("Go to end screen");
         undoButton.setDisable(true);
         hintButton.setDisable(true);
-        autoSolved = true;
     }
 
     public void surrender(ActionEvent event) throws IOException {
@@ -191,6 +192,8 @@ public class JoinFiveController {
         Parent root = loader.load();
 
         MainTitleController mainTitleController = loader.getController();
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -260,6 +263,8 @@ public class JoinFiveController {
 
         EndOfGameController endOfGameController = loader.getController();
         endOfGameController.displayEndOfGame(board, autoSolved);
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
 
         Stage stage = (Stage) joinFivePane.getScene().getWindow();
         Scene scene = new Scene(root);
@@ -298,6 +303,8 @@ public class JoinFiveController {
         playerScoreText.setText("0");
         playerNameText.setText(board.getPlayerName());
         gameModeText.setText(board.getGameMode().getId());
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("join_five_music.mp3");
         board.initialize();
         for (Point point : board.getPoints()) {
