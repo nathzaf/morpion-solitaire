@@ -48,12 +48,11 @@ public class MainTitleController {
 
         String playerName = playerNameTextField.getText();
 
-        if(playerName.isBlank()) {
+        if (playerName.isBlank()) {
             valid = false;
             alert.setHeaderText("Player name can't be blank !");
             alert.show();
-        }
-        else if(mode == null) {
+        } else if (mode == null) {
             valid = false;
             alert.setHeaderText("A mode must be selected !");
             alert.show();
@@ -62,7 +61,7 @@ public class MainTitleController {
         if (sharpModeCheckBox.isSelected()) {
             if (mode == Mode.TOUCHING)
                 mode = Mode.TOUCHING_SHARP;
-            else if(mode == Mode.DISJOINT)
+            else if (mode == Mode.DISJOINT)
                 mode = Mode.DISJOINT_SHARP;
         }
 
@@ -72,7 +71,7 @@ public class MainTitleController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
             Parent root = loader.load();
 
-            if(mediaPlayer != null)
+            if (mediaPlayer != null)
                 mediaPlayer.stop();
 
             JoinFiveController joinFiveController = loader.getController();
@@ -102,13 +101,13 @@ public class MainTitleController {
     }
 
     public void getMode(ActionEvent event) {
-        if(mode5DRadioButton.isSelected())
+        if (mode5DRadioButton.isSelected())
             mode = Mode.DISJOINT;
-        else if(mode5TRadioButton.isSelected())
+        else if (mode5TRadioButton.isSelected())
             mode = Mode.TOUCHING;
     }
 
-    public void quit(ActionEvent event){
+    public void quit(ActionEvent event) {
         Platform.exit();
     }
 }

@@ -75,7 +75,7 @@ public class JoinFiveController {
     private MediaPlayer mediaPlayer;
 
     public void selectPoint(MouseEvent event) throws IOException {
-        if(!multipleAlignments) {
+        if (!multipleAlignments) {
             Circle circle = (Circle) event.getSource();
 
             Point selectedPoint = convertPointIdToPoint(circle.getId());
@@ -98,7 +98,7 @@ public class JoinFiveController {
                     circle.setOpacity(1);
                     drawLine(possibleAlignments.get(0));
                 } else if (possibleAlignments.size() > 1) {
-                    if(!autoSolved)
+                    if (!autoSolved)
                         MusicPlayer.playSoundEffectFromGUIPackage("choice_sound.mp3");
                     hintButton.setDisable(true);
                     randomSolverButton.setDisable(true);
@@ -107,11 +107,11 @@ public class JoinFiveController {
                     Map<Point, Alignment> possibleAlignmentsMap = new HashMap<>();
                     multipleAlignmentsCandidates = possibleAlignmentsMap.keySet();
                     LOGGER.info("Multiple alignment possible for this point :");
-                    for (Alignment alignment : possibleAlignments){
+                    for (Alignment alignment : possibleAlignments) {
                         LOGGER.info("{}", alignment);
                         possibleAlignmentsMap.put(alignment.getExtremities().get(0), alignment);
                     }
-                    if(!multipleAlignmentsCandidates.contains(selectedPoint))
+                    if (!multipleAlignmentsCandidates.contains(selectedPoint))
                         circle.setOpacity(1);
                     for (Point point : possibleAlignmentsMap.keySet()) {
                         setCircleOpacityFromPoint(point, 1);
@@ -130,7 +130,7 @@ public class JoinFiveController {
 
     private void setCircleCreatingAlignmentFormPoint(Point point, Alignment alignment) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
-        if(circle == null)
+        if (circle == null)
             throw new IllegalArgumentException("This point is not associated to a circle.");
         circle.setOnMouseClicked((MouseEvent e) -> {
             hintButton.setDisable(false);
@@ -141,8 +141,8 @@ public class JoinFiveController {
             drawLine(alignment);
             multipleAlignmentsCandidates.remove(point);
             multipleAlignments = false;
-            for(Point candidate : multipleAlignmentsCandidates) {
-                if(board.getPoints().contains(candidate))
+            for (Point candidate : multipleAlignmentsCandidates) {
+                if (board.getPoints().contains(candidate))
                     setCircleOpacityFromPoint(candidate, 1);
                 else
                     setCircleOpacityFromPoint(candidate, 0);
@@ -161,7 +161,7 @@ public class JoinFiveController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
         Parent root = loader.load();
 
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
 
         JoinFiveController joinFiveController = loader.getController();
@@ -196,7 +196,7 @@ public class JoinFiveController {
         Parent root = loader.load();
 
         MainTitleController mainTitleController = loader.getController();
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
         mainTitleController.init();
 
@@ -206,13 +206,13 @@ public class JoinFiveController {
         stage.show();
     }
 
-    public void quit(ActionEvent event){
+    public void quit(ActionEvent event) {
         LOGGER.info("Quitting the game.");
         Platform.exit();
     }
 
     public void undo(ActionEvent event) {
-        if(board.getScore() > 0) {
+        if (board.getScore() > 0) {
             Point undoPoint = board.undo();
             setCircleOpacityFromPoint(undoPoint, 0);
             updatePlayerScoreText();
@@ -229,27 +229,27 @@ public class JoinFiveController {
         hint = true;
         hintPoints.clear();
         hintPoints = board.getPossibleMoves();
-        for(Point point : hintPoints)
+        for (Point point : hintPoints)
             setCircleOpacityFromPoint(point, 0.5);
     }
 
     private void setCircleOpacityFromPoint(Point point, double opacity) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
-        if(circle == null)
+        if (circle == null)
             throw new IllegalArgumentException("This point is not associated to a circle.");
         circle.setOpacity(opacity);
     }
 
     private void setCircleColorFromPoint(Point point, Color color) {
         Circle circle = (Circle) scene.lookup(point.generateCircleId());
-        if(circle == null)
+        if (circle == null)
             throw new IllegalArgumentException("This point is not associated to a circle.");
         circle.setFill(color);
     }
 
     private void addNumberOnPoint(Circle circle, int number) {
-        if(number != -1) { //case of initialized points
-            if((number == 1 || number % 5 == 0) && !autoSolved)
+        if (number != -1) { //case of initialized points
+            if ((number == 1 || number % 5 == 0) && !autoSolved)
                 MusicPlayer.playSoundEffectFromGUIPackage("score_sound.mp3");
             Text numberText = new Text(String.valueOf(number));
             int dx = number < 10 ? 10 : 15;
@@ -270,7 +270,7 @@ public class JoinFiveController {
 
         EndOfGameController endOfGameController = loader.getController();
         endOfGameController.displayEndOfGame(board, autoSolved);
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
 
         Stage stage = (Stage) joinFivePane.getScene().getWindow();
@@ -289,7 +289,7 @@ public class JoinFiveController {
         Point endPoint = extremities.get(1);
         Circle endCircle = (Circle) scene.lookup(endPoint.generateCircleId());
 
-        if(startCircle == null || endCircle == null) {
+        if (startCircle == null || endCircle == null) {
             throw new NullPointerException("Can't found associated circles.");
         }
 
@@ -299,7 +299,7 @@ public class JoinFiveController {
         line.setEndY(endCircle.getCenterY());
         line.setStrokeWidth(2);
         line.setStroke(Color.YELLOW);
-        line.setId("line"+ board.getScore());
+        line.setId("line" + board.getScore());
 
         joinFivePane.getChildren().add(line);
     }
@@ -310,7 +310,7 @@ public class JoinFiveController {
         playerScoreText.setText("0");
         playerNameText.setText(board.getPlayerName());
         gameModeText.setText(board.getGameMode().getId());
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("join_five_music.mp3");
         board.initialize();
@@ -321,14 +321,14 @@ public class JoinFiveController {
     }
 
     private void updateBoard() {
-        for(Point point : board.getPoints()) {
+        for (Point point : board.getPoints()) {
             Circle circle = (Circle) scene.lookup(point.generateCircleId());
-            if(circle == null)
+            if (circle == null)
                 throw new NullPointerException();
             circle.setOpacity(1);
             addNumberOnPoint(circle, point.getScore());
         }
-        for(Alignment alignment : board.getAlignments()) {
+        for (Alignment alignment : board.getAlignments()) {
             drawLine(alignment);
         }
         updatePlayerScoreText();
@@ -338,7 +338,7 @@ public class JoinFiveController {
         Pattern pattern = Pattern.compile("x(\\d{1,2})y(\\d{1,2})");
         Matcher matcher = pattern.matcher(id);
 
-        if(matcher.find()) {
+        if (matcher.find()) {
             return new Point(Integer.parseInt(matcher.group(1)),
                     Integer.parseInt(matcher.group(2)));
         }

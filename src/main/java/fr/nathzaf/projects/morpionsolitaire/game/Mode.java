@@ -29,7 +29,7 @@ public enum Mode {
         return maxCommonPoints;
     }
 
-    public boolean isSharpMode(){
+    public boolean isSharpMode() {
         return sharpMode;
     }
 }
