@@ -44,7 +44,7 @@ public class ScoreboardController {
 
     public void displayRanking() {
         LOGGER.info("Displaying ranking");
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("ranking_music.mp3");
         fillRankingVBox(ranking5TVBox, Mode.TOUCHING);
@@ -73,7 +73,7 @@ public class ScoreboardController {
                         " with a score of " + gameHistory.get(i).getScore() + " " + gameHistory.get(i).getAutoSolver());
                 rankingLine.setFill(Color.WHITE);
                 rankingLine.setLineSpacing(1);
-                Font font = new Font( "The Wild Breath of Zelda", 20);
+                Font font = new Font("The Wild Breath of Zelda", 20);
                 rankingLine.setFont(font);
                 vBox.getChildren().add(rankingLine);
             }
@@ -87,7 +87,7 @@ public class ScoreboardController {
         Parent root = loader.load();
 
         MainTitleController mainTitleController = loader.getController();
-        if(mediaPlayer != null)
+        if (mediaPlayer != null)
             mediaPlayer.stop();
         mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
 
@@ -97,7 +97,7 @@ public class ScoreboardController {
         stage.show();
     }
 
-    public void quit(ActionEvent event){
+    public void quit(ActionEvent event) {
         LOGGER.info("Quitting the game.");
         Platform.exit();
     }
