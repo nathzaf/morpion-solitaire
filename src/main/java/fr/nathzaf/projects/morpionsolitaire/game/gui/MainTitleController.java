@@ -2,6 +2,7 @@ package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,15 +76,15 @@ public class MainTitleController {
     }
 
     public void displayRanking(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Scoreboard.fxml"));
         Parent root = loader.load();
 
-        RankingController rankingController = loader.getController();
+        ScoreboardController scoreboardController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        rankingController.displayRanking();
+        scoreboardController.displayRanking();
         stage.show();
     }
 
@@ -92,5 +93,9 @@ public class MainTitleController {
             mode = Mode.DISJOINT;
         else if(mode5TRadioButton.isSelected())
             mode = Mode.TOUCHING;
+    }
+
+    public void quit(ActionEvent event){
+        Platform.exit();
     }
 }
