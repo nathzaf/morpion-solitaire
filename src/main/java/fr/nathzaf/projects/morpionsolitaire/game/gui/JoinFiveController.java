@@ -160,6 +160,9 @@ public class JoinFiveController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
         Parent root = loader.load();
 
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
+
         JoinFiveController joinFiveController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
