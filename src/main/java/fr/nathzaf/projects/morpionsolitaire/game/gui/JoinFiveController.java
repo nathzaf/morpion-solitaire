@@ -161,6 +161,9 @@ public class JoinFiveController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
         Parent root = loader.load();
 
+        if(mediaPlayer != null)
+            mediaPlayer.stop();
+
         JoinFiveController joinFiveController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -195,7 +198,7 @@ public class JoinFiveController {
         MainTitleController mainTitleController = loader.getController();
         if(mediaPlayer != null)
             mediaPlayer.stop();
-        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+        mainTitleController.init();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -250,7 +253,7 @@ public class JoinFiveController {
                 MusicPlayer.playSoundEffectFromGUIPackage("score_sound.mp3");
             Text numberText = new Text(String.valueOf(number));
             int dx = number < 10 ? 10 : 15;
-            Font font = new Font("Chakra Petch Regular", 12);
+            Font font = new Font("The Wild Breath of Zelda", 12);
             numberText.setFont(font);
             numberText.setX(circle.getCenterX() - dx);
             numberText.setY(circle.getCenterY() + 15);

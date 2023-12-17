@@ -64,7 +64,7 @@ public class ScoreboardController {
             modeText.setFill(Color.WHITE);
             modeText.setLineSpacing(1);
             modeText.setUnderline(true);
-            Font fontMode = new Font("Chakra Petch Regular", 15);
+            Font fontMode = new Font("The Wild Breath of Zelda", 20);
             modeText.setFont(fontMode);
             vBox.getChildren().add(modeText);
             vBox.getChildren().add(new Text());
@@ -73,7 +73,7 @@ public class ScoreboardController {
                         " with a score of " + gameHistory.get(i).getScore() + " " + gameHistory.get(i).getAutoSolver());
                 rankingLine.setFill(Color.WHITE);
                 rankingLine.setLineSpacing(1);
-                Font font = new Font( "Chakra Petch Regular", 15);
+                Font font = new Font( "The Wild Breath of Zelda", 20);
                 rankingLine.setFont(font);
                 vBox.getChildren().add(rankingLine);
             }
