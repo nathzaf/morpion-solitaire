@@ -29,7 +29,12 @@ public class GameHistory {
         this.score = score;
     }
 
-
+    /**
+     * Get all game history for a specified mode from the database.
+     *
+     * @param mode the wanted mode
+     * @return the list of GameHistory of the wanted mode
+     */
     public static List<GameHistory> getAllGameHistoryByMode(Mode mode) {
         List<GameHistory> gameHistoryList = new ArrayList<>();
         try {
@@ -50,6 +55,14 @@ public class GameHistory {
         return gameHistoryList;
     }
 
+    /**
+     * Add a new instance of GameHistory in the database
+     *
+     * @param playerNameInput the name of the player
+     * @param mode the mode
+     * @param autoSolver the string that says if has been auto solved
+     * @param scoreInput the score of that game
+     */
     public static void addNewGameHistory(String playerNameInput, String mode, String autoSolver, int scoreInput) {
         try {
             Connection connection = DriverManager.getConnection(DB_URL);

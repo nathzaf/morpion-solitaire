@@ -16,6 +16,9 @@ public class RandomSolver implements Solver {
         this.board = board;
     }
 
+    /**
+     * Solve the game by playing random points, and random alignment if there are multiple choices.
+     */
     @Override
     public void solve() {
         Random random = new Random();

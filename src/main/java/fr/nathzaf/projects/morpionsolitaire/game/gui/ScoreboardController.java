@@ -42,6 +42,9 @@ public class ScoreboardController {
 
     private MediaPlayer mediaPlayer;
 
+    /**
+     * Display the ranking scoreboard by filling all rankings VBox.
+     */
     public void displayRanking() {
         LOGGER.info("Displaying ranking");
         if(mediaPlayer != null)
@@ -53,6 +56,12 @@ public class ScoreboardController {
         fillRankingVBox(ranking5DSharpVBox, Mode.DISJOINT_SHARP);
     }
 
+    /**
+     * Fill one VBox ranking with the scoreboard of one mode.
+     *
+     * @param vBox the VBox to be filled
+     * @param mode the wanted scoreboard mode
+     */
     private void fillRankingVBox(VBox vBox, Mode mode) {
         List<GameHistory> gameHistory = GameHistory.getAllGameHistoryByMode(mode);
         if (!gameHistory.isEmpty()) {
@@ -82,6 +91,12 @@ public class ScoreboardController {
         }
     }
 
+    /**
+     * Handle clicking "Return to main title" button, send the user to the main title screen.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void returnToMainTitle(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainTitle.fxml"));
         Parent root = loader.load();
@@ -97,6 +112,11 @@ public class ScoreboardController {
         stage.show();
     }
 
+    /**
+     * Handle clicking "Quit" button, close the window.
+     *
+     * @param event
+     */
     public void quit(ActionEvent event){
         LOGGER.info("Quitting the game.");
         Platform.exit();

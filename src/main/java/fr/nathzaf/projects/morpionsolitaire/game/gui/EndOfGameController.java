@@ -23,6 +23,12 @@ public class EndOfGameController {
     @FXML
     private Text playerScoreText;
 
+    /**
+     * Display the end of game screen, with player's score.
+     *
+     * @param board the board of the game
+     * @param autoSolved a boolean that says if it has been auto solved
+     */
     public void displayEndOfGame(Board board, boolean autoSolved) {
         MusicPlayer.stopMusic();
         MusicPlayer.playSoundEffectFromGUIPackage("game_over_sound.mp3");
@@ -32,6 +38,12 @@ public class EndOfGameController {
         LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
 
+    /**
+     * Handle pressing "New Game" button, and send back to main title screen.
+     *
+     * @param event
+     * @throws IOException
+     */
     public void newGame(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainTitle.fxml"));
         Parent root = loader.load();

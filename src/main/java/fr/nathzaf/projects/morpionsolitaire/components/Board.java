@@ -43,7 +43,7 @@ public class Board {
     }
 
     /**
-     * Initialize the board with the middle cross.
+     * Initialize the board with the middle cross or the arrow if in sharp mode.
      */
     public void initialize() {
         final int x = 6;
