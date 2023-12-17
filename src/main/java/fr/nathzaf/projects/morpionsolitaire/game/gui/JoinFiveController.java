@@ -253,7 +253,7 @@ public class JoinFiveController {
                 MusicPlayer.playSoundEffectFromGUIPackage("score_sound.mp3");
             Text numberText = new Text(String.valueOf(number));
             int dx = number < 10 ? 10 : 15;
-            Font font = new Font("Chakra Petch Regular", 12);
+            Font font = new Font("The Wild Breath of Zelda", 12);
             numberText.setFont(font);
             numberText.setX(circle.getCenterX() - dx);
             numberText.setY(circle.getCenterY() + 15);

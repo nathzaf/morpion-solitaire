@@ -16,23 +16,23 @@
       </ImageView>
       <Text fill="WHITE" layoutX="216.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game over!">
          <font>
-            <Font name="Chakra Petch Regular" size="33.0" />
+            <Font name="The Wild Breath of Zelda" size="36.0" />
          </font></Text>
       <Text fx:id="playerScoreText" fill="WHITE" layoutX="110.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
          <font>
-            <Font name="Chakra Petch Regular" size="25.0" />
+            <Font name="The Wild Breath of Zelda" size="28.0" />
          </font></Text>
       <Button layoutX="81.0" layoutY="286.0" mnemonicParsing="false" onAction="#newGame" text="New game">
          <font>
-            <Font name="Chakra Petch Regular" size="18.0" />
+            <Font name="The Wild Breath of Zelda" size="21.0" />
          </font></Button>
       <Button layoutX="426.0" layoutY="287.0" mnemonicParsing="false" onAction="#quit" text="Quit">
          <font>
-            <Font name="Chakra Petch Regular" size="18.0" />
+            <Font name="The Wild Breath of Zelda" size="21.0" />
          </font></Button>
       <Button layoutX="258.0" layoutY="286.0" mnemonicParsing="false" onAction="#displayRanking" text="Ranking">
          <font>
-            <Font name="Chakra Petch Regular" size="18.0" />
+            <Font name="The Wild Breath of Zelda" size="21.0" />
          </font></Button>
    </children>
 </AnchorPane>

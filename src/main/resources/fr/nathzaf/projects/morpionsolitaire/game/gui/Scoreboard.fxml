@@ -21,11 +21,11 @@
       </ImageView>
       <Button layoutX="284.0" layoutY="680.0" mnemonicParsing="false" onAction="#returnToMainTitle" text="Return to main title">
          <font>
-            <Font name="Chakra Petch Regular" size="20.0" />
+            <Font name="The Wild Breath of Zelda" size="23.0" />
          </font></Button>
       <Button layoutX="605.0" layoutY="680.0" mnemonicParsing="false" onAction="#quit" text="Quit">
          <font>
-            <Font name="Chakra Petch Regular" size="20.0" />
+            <Font name="The Wild Breath of Zelda" size="23.0" />
          </font></Button>
       <GridPane alignment="CENTER" layoutX="78.0" layoutY="110.0" prefHeight="523.0" prefWidth="858.0">
         <columnConstraints>
@@ -45,9 +45,9 @@
       </GridPane>
       <Line endX="37.01605224609375" endY="533.9052124023438" layoutX="473.0" layoutY="90.0" startX="37.0159912109375" startY="24.13878631591797" stroke="WHITE" strokeWidth="3.0" />
       <Line endX="-357.71063232421875" endY="274.0" layoutX="483.0" layoutY="100.0" startX="397.9332275390625" startY="274.0" stroke="WHITE" strokeWidth="3.0" />
-      <Text fill="WHITE" layoutX="392.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scoreboards">
+      <Text fill="WHITE" layoutX="363.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scoreboards">
          <font>
-            <Font name="Chakra Petch Regular" size="41.0" />
+            <Font name="The Wild Breath of Zelda" size="63.0" />
          </font>
       </Text>
    </children>

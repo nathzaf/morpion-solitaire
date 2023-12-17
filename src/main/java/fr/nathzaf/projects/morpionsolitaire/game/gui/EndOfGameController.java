@@ -27,7 +27,7 @@ public class EndOfGameController {
         MusicPlayer.stopMusic();
         MusicPlayer.playSoundEffectFromGUIPackage("game_over_sound.mp3");
         String autoSolver = autoSolved ? "(auto solved randomly)" : "";
-        playerScoreText.setText("Your score is: " + board.getScore() + "\nIt has been registered on database.");
+        playerScoreText.setText("Your score is: " + board.getScore() + "\nIt has been registered on database");
         GameHistory.addNewGameHistory(board.getPlayerName(), board.getGameMode().getId(), autoSolver, board.getScore());
         LOGGER.info("Game has ended with a score of {}.", board.getScore());
     }
