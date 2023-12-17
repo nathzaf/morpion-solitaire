@@ -31,11 +31,11 @@ public class MusicPlayer {
      *
      * @param fileName the name of the music file
      */
-    public static void playMusicFromGUIPackage(String fileName){
+    public static MediaPlayer playMusicFromGUIPackage(String fileName){
         URL musicFile = MusicPlayer.class.getResource(fileName);
         MusicPlayer musicPlayer = MusicPlayer.getInstance();
         musicPlayer.setMusic(musicFile.toString());
-        musicPlayer.playMusic();
+        return musicPlayer.playMusic();
     }
 
     /**
@@ -71,12 +71,13 @@ public class MusicPlayer {
      * Plays the background music.
      * If there is no background music set, this method has no effect.
      */
-    private void playMusic(){
+    private MediaPlayer playMusic(){
         if(mediaPlayer != null){
             mediaPlayer.setVolume(1);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.play();
         }
+        return mediaPlayer;
     }
 
     /**

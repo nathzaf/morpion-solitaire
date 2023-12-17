@@ -2,6 +2,7 @@ package fr.nathzaf.projects.morpionsolitaire.game.gui;
 
 import fr.nathzaf.projects.morpionsolitaire.components.Board;
 import fr.nathzaf.projects.morpionsolitaire.game.Mode;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +13,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ChoosePlayerNameAndModeController {
+public class MainTitleController {
 
     @FXML
     private TextField playerNameTextField;
@@ -31,6 +33,12 @@ public class ChoosePlayerNameAndModeController {
     private CheckBox sharpModeCheckBox;
 
     private Mode mode = null;
+
+    private MediaPlayer mediaPlayer;
+
+    public void init() {
+        mediaPlayer = MusicPlayer.playMusicFromGUIPackage("main_title_music.mp3");
+    }
 
     public void startGame(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -64,6 +72,9 @@ public class ChoosePlayerNameAndModeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("JoinFive.fxml"));
             Parent root = loader.load();
 
+            if(mediaPlayer != null)
+                mediaPlayer.stop();
+
             JoinFiveController joinFiveController = loader.getController();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -75,15 +86,18 @@ public class ChoosePlayerNameAndModeController {
     }
 
     public void displayRanking(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ranking.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Scoreboard.fxml"));
         Parent root = loader.load();
 
-        RankingController rankingController = loader.getController();
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
+
+        ScoreboardController scoreboardController = loader.getController();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        rankingController.displayRanking();
+        scoreboardController.displayRanking();
         stage.show();
     }
 
@@ -92,5 +106,9 @@ public class ChoosePlayerNameAndModeController {
             mode = Mode.DISJOINT;
         else if(mode5TRadioButton.isSelected())
             mode = Mode.TOUCHING;
+    }
+
+    public void quit(ActionEvent event){
+        Platform.exit();
     }
 }
